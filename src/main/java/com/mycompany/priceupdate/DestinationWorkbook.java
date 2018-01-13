@@ -43,9 +43,10 @@ public class DestinationWorkbook {
                             break;
                         case BLANK :
                             break;
-                        case BOOLEAN :
+                        case _NONE :
                             break;
                         case FORMULA :
+                            cellOfNewTable.setCellFormula(cell.getCellFormula());
                             break;
                 }
             }
