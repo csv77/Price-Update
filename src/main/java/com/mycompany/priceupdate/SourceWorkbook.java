@@ -29,11 +29,16 @@ public class SourceWorkbook {
         int lastRow = sheet.getLastRowNum();
         for(int rowNum = 1; rowNum <= lastRow; rowNum++) {
             Row row = sheet.getRow(rowNum);
-            int lastColumn = row.getLastCellNum();
             
             List<Cell> listOfCells = new ArrayList<>();
-            for(int cellNum = 0; cellNum < lastColumn; cellNum++) {
-                listOfCells.add(row.getCell(cellNum));
+            for(Columns column : Columns.values()) {
+                switch(column) {
+                    case A: case B: case D: case E: case F: case G:
+                        if(row.getCell(column.ordinal()) != null) {
+                            listOfCells.add(row.getCell(column.ordinal()));
+                        }
+                        break;
+                }
             }
             listOfPrices.add(listOfCells);
         }
