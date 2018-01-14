@@ -7,29 +7,23 @@ import org.apache.poi.ss.usermodel.Cell;
 public class DataReorder {
     private List<List<Cell>> listOfPrices;
     private List<List<Cell>> orderedList = new ArrayList<>();
-    private int numberOfRows;
-    private int numberOfColumns;
 
     public DataReorder(List<List<Cell>> listOfPrices) {
         this.listOfPrices = listOfPrices;
-        numberOfRows = listOfPrices.size();
-        numberOfColumns = listOfPrices.get(0).size();
     }
 
-    public List<List<Cell>> getOrderedList() {
-        return orderedList;
-    }
-    
     public List<List<Cell>> reorderData() {
+        int numberOfRows = listOfPrices.size();
         for(int i = 0; i < numberOfRows; i++) {
-            for(int j = 1; j < numberOfColumns; j++) {
+            int numberOfColumns = listOfPrices.get(i).size();
+            for(int j = 1; j < numberOfColumns; j += 2) {
                 List<Cell> cells = new ArrayList();
                 cells.add(listOfPrices.get(i).get(0));
                 cells.add(listOfPrices.get(i).get(j));
+                cells.add(listOfPrices.get(i).get(j + 1));
                 orderedList.add(cells);
             }
         }
-        
         return orderedList;
     }
 }

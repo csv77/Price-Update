@@ -26,8 +26,8 @@ public class DestinationWorkbook {
     }
 
     public void loadData() {
-        dataReorder.reorderData();
-        newListOfPrices = dataReorder.getOrderedList();
+        newListOfPrices = dataReorder.reorderData();
+        
         int i = 0;
         for(List<Cell> cells : newListOfPrices) {
             Row row = sheet.createRow(i++);
@@ -36,18 +36,18 @@ public class DestinationWorkbook {
                 Cell cellOfNewTable = row.createCell(j++);
                 switch(cell.getCellTypeEnum()) {
                     case STRING :
-                            cellOfNewTable.setCellValue(cell.getStringCellValue());
-                            break;
-                        case NUMERIC :
-                            cellOfNewTable.setCellValue(cell.getNumericCellValue());
-                            break;
-                        case BLANK :
-                            break;
-                        case _NONE :
-                            break;
-                        case FORMULA :
-                            cellOfNewTable.setCellFormula(cell.getCellFormula());
-                            break;
+                        cellOfNewTable.setCellValue(cell.getStringCellValue());
+                        break;
+                    case NUMERIC :
+                        cellOfNewTable.setCellValue(cell.getNumericCellValue());
+                        break;
+                    case BLANK :
+                        break;
+                    case _NONE :
+                        break;
+                    case FORMULA :
+                        cellOfNewTable.setCellFormula(cell.getCellFormula());
+                        break;
                 }
             }
         }

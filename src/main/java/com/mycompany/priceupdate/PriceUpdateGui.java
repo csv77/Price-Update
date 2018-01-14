@@ -18,7 +18,7 @@ public class PriceUpdateGui extends Application {
     private Label lbStatus = new Label();
     private FileChooser chooser = new FileChooser();
     private File file;
-    private String initialDirectory = "c:\\programming\\java\\Intro_to_Java_Programming_10th_exercises\\StandaloneProjects\\PriceUpdate\\";
+    private String initialDirectory = "c:\\";
     private String destinationFilename = "árfelvitel_táblázat.xlsx";
     
     @Override
@@ -33,6 +33,7 @@ public class PriceUpdateGui extends Application {
             chooser.setTitle("Open");
             chooser.setInitialDirectory(new File(initialDirectory));
             file = chooser.showOpenDialog(primaryStage);
+            initialDirectory = file.getParent() + "\\";
         });
         
         Button btStart = new Button("Start");
@@ -43,6 +44,7 @@ public class PriceUpdateGui extends Application {
         btStart.setOnAction(e -> {
             try {
                 Controller controller = new Controller(initialDirectory + file.getName(), initialDirectory + destinationFilename);
+                lbStatus.setText("File is completed.");
             } catch (FileNotFoundException ex) {
                 lbStatus.setText("File not found.");
             } catch (InvalidFormatException ex) {
@@ -50,7 +52,6 @@ public class PriceUpdateGui extends Application {
             } catch (IOException ex) {
                 lbStatus.setText("Cannot open the file.");
             }
-            lbStatus.setText("File is finished.");
         });
         
         Scene scene = new Scene(borderPane, 200, 100);

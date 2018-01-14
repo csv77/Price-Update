@@ -30,17 +30,37 @@ public class SourceWorkbook {
         for(int rowNum = 1; rowNum <= lastRow; rowNum++) {
             Row row = sheet.getRow(rowNum);
             
+            int lastColumn = row.getLastCellNum();
             List<Cell> listOfCells = new ArrayList<>();
-            for(Columns column : Columns.values()) {
+            for(int column = 0; column < lastColumn; column++) {
                 switch(column) {
-                    case A: case B: case D: case E: case F: case G:
-                        if(row.getCell(column.ordinal()) != null) {
-                            listOfCells.add(row.getCell(column.ordinal()));
+                    case 0: case 1: case 2: case 3: case 4: case 5: case 6:
+                        if(row.getCell(column).toString() != "") {
+                            listOfCells.add(row.getCell(column));
+                            if(column == 1) {
+                                Cell cellOfCurrency = row.createCell(50);
+                                cellOfCurrency.setCellValue("FT");
+                                listOfCells.add(cellOfCurrency);
+                            }
+                            else if (column > 1){
+                                Cell cellOfCurrency = row.createCell(51);
+                                cellOfCurrency.setCellValue("EUR");
+                                listOfCells.add(cellOfCurrency);
+                            }
                         }
                         break;
                 }
             }
             listOfPrices.add(listOfCells);
+        }
+    }
+    
+    public static void printListOfList(List<List<Cell>> listOfPrices) {
+        for(List<Cell> listOfCells : listOfPrices) {
+            for(Cell cell : listOfCells) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
         }
     }
 }
