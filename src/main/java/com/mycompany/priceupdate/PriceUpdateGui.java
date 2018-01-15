@@ -18,7 +18,7 @@ public class PriceUpdateGui extends Application {
     private Label lbStatus = new Label();
     private FileChooser chooser = new FileChooser();
     private File file;
-    private String initialDirectory = "c:\\";
+    private String initialDirectory;
     private String destinationFilename = "árfelvitel_táblázat.xlsx";
     
     @Override
@@ -30,10 +30,15 @@ public class PriceUpdateGui extends Application {
         BorderPane.setAlignment(btOpenFile, Pos.CENTER);
         
         btOpenFile.setOnAction(e -> {
+            lbStatus.setText("");
             chooser.setTitle("Open");
+            initialDirectory = LastDirectory.loadThePath();
             chooser.setInitialDirectory(new File(initialDirectory));
             file = chooser.showOpenDialog(primaryStage);
-            initialDirectory = file.getParent() + "\\";
+            if(file != null) {
+                initialDirectory = file.getParent() + "\\";
+                LastDirectory.saveThePath(initialDirectory);
+            }
         });
         
         Button btStart = new Button("Start");
@@ -42,15 +47,17 @@ public class PriceUpdateGui extends Application {
         BorderPane.setAlignment(lbStatus, Pos.CENTER);
         
         btStart.setOnAction(e -> {
-            try {
-                Controller controller = new Controller(initialDirectory + file.getName(), initialDirectory + destinationFilename);
-                lbStatus.setText("File is completed.");
-            } catch (FileNotFoundException ex) {
-                lbStatus.setText("File not found.");
-            } catch (InvalidFormatException ex) {
-                lbStatus.setText("Invalid file format.");
-            } catch (IOException ex) {
-                lbStatus.setText("Cannot open the file.");
+            if(file != null) {
+                try {
+                    Controller controller = new Controller(initialDirectory + file.getName(), initialDirectory + destinationFilename);
+                    lbStatus.setText("File is completed.");
+                } catch (FileNotFoundException ex) {
+                    lbStatus.setText("File not found.");
+                } catch (InvalidFormatException ex) {
+                    lbStatus.setText("Invalid file format.");
+                } catch (IOException ex) {
+                    lbStatus.setText("Cannot open the file.");
+                }
             }
         });
         
