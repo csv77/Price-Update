@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class LastDirectory {
+public final class LastDirectory {
     
     public static String saveThePath(String pathname) {
         String message = "";

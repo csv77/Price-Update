@@ -51,5 +51,9 @@ public class DestinationWorkbook {
                 }
             }
         }
+        int lastCellNum = sheet.getRow(0).getLastCellNum();
+        for(int column = 0; column < lastCellNum; column++) {
+            sheet.autoSizeColumn(column);
+        }
     }
 }
