@@ -54,7 +54,7 @@ public class PriceUpdateGui extends Application {
             }
         });
         
-        Scene scene = new Scene(borderPane, 200, 100);
+        Scene scene = new Scene(borderPane, 250, 100);
         primaryStage.setTitle("Árfelvitelhez");
         primaryStage.setScene(scene);
         primaryStage.show();
