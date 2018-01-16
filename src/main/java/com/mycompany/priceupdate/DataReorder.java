@@ -16,11 +16,12 @@ public class DataReorder {
         int numberOfRows = listOfPrices.size();
         for(int i = 0; i < numberOfRows; i++) {
             int numberOfColumns = listOfPrices.get(i).size();
-            for(int j = 1; j < numberOfColumns; j += 2) {
+            for(int j = 1; j < numberOfColumns; j += 3) {
                 List<Cell> cells = new ArrayList();
                 cells.add(listOfPrices.get(i).get(0));
                 cells.add(listOfPrices.get(i).get(j));
                 cells.add(listOfPrices.get(i).get(j + 1));
+                cells.add(listOfPrices.get(i).get(j + 2));
                 orderedList.add(cells);
             }
         }
