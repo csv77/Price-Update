@@ -31,6 +31,7 @@ public class SourceWorkbook {
             Row row = sheet.getRow(rowNum);
             
             int lastColumn = row.getLastCellNum();
+            int columnForCurrency = lastColumn + 1;
             List<Cell> listOfCells = new ArrayList<>();
             for(int column = 0; column < lastColumn; column++) {
                 switch(column) {
@@ -39,100 +40,52 @@ public class SourceWorkbook {
                             listOfCells.add(row.getCell(column));
                             switch(column) {
                                 case 1:
-                                    Cell cellOfCurrency = row.createCell(lastColumn + 10);
-                                    cellOfCurrency.setCellValue(PriceCat.HU_LISTA.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    Cell cellOfPriceCode = row.createCell(lastColumn + 11);
-                                    cellOfPriceCode.setCellValue(PriceCat.HU_LISTA.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.HU_LISTA);
+                                    columnForCurrency += 2;
                                     break;
                                 case 2:
-                                    cellOfCurrency = row.createCell(lastColumn + 12);
-                                    cellOfCurrency.setCellValue(PriceCat.AGRAM_TR.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 13);
-                                    cellOfPriceCode.setCellValue(PriceCat.AGRAM_TR.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.AGRAM_TR);
+                                    columnForCurrency += 2;
                                     break;
                                 case 3:
-                                    cellOfCurrency = row.createCell(lastColumn + 14);
-                                    cellOfCurrency.setCellValue(PriceCat.AGRAM_LISTA.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 15);
-                                    cellOfPriceCode.setCellValue(PriceCat.AGRAM_LISTA.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.AGRAM_LISTA);
+                                    columnForCurrency += 2;
                                     break;
                                 case 4:
-                                    cellOfCurrency = row.createCell(lastColumn + 16);
-                                    cellOfCurrency.setCellValue(PriceCat.OKOVI_TR.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 17);
-                                    cellOfPriceCode.setCellValue(PriceCat.OKOVI_TR.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.OKOVI_TR);
+                                    columnForCurrency += 2;
                                     break;
                                 case 5:
-                                    cellOfCurrency = row.createCell(lastColumn + 18);
-                                    cellOfCurrency.setCellValue(PriceCat.OKOVI_LISTA.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 19);
-                                    cellOfPriceCode.setCellValue(PriceCat.OKOVI_LISTA.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.OKOVI_LISTA);
+                                    columnForCurrency += 2;
                                     break;
                                 case 6:
-                                    cellOfCurrency = row.createCell(lastColumn + 20);
-                                    cellOfCurrency.setCellValue(PriceCat.EUR_LISTA.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 21);
-                                    cellOfPriceCode.setCellValue(PriceCat.EUR_LISTA.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.EUR_LISTA);
+                                    columnForCurrency += 2;
                                     break;
                                 case 7:
-                                    cellOfCurrency = row.createCell(lastColumn + 22);
-                                    cellOfCurrency.setCellValue(PriceCat.HU_KONF.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 23);
-                                    cellOfPriceCode.setCellValue(PriceCat.HU_KONF.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.HU_KONF);
+                                    columnForCurrency += 2;
                                     break;
                                 case 8:
-                                    cellOfCurrency = row.createCell(lastColumn + 24);
-                                    cellOfCurrency.setCellValue(PriceCat.AGRAM_KONF_TR.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 25);
-                                    cellOfPriceCode.setCellValue(PriceCat.AGRAM_KONF_TR.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.AGRAM_KONF_TR);
+                                    columnForCurrency += 2;
                                     break;
                                 case 9:
-                                    cellOfCurrency = row.createCell(lastColumn + 26);
-                                    cellOfCurrency.setCellValue(PriceCat.AGRAM_KONF_LISTA.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 27);
-                                    cellOfPriceCode.setCellValue(PriceCat.AGRAM_KONF_LISTA.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.AGRAM_KONF_LISTA);
+                                    columnForCurrency += 2;
                                     break;
                                 case 10:
-                                    cellOfCurrency = row.createCell(lastColumn + 28);
-                                    cellOfCurrency.setCellValue(PriceCat.OKOVI_KONF_TR.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 29);
-                                    cellOfPriceCode.setCellValue(PriceCat.OKOVI_KONF_TR.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.OKOVI_KONF_TR);
+                                    columnForCurrency += 2;
                                     break;
                                 case 11:
-                                    cellOfCurrency = row.createCell(lastColumn + 30);
-                                    cellOfCurrency.setCellValue(PriceCat.OKOVI_KONF_LISTA.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 31);
-                                    cellOfPriceCode.setCellValue(PriceCat.OKOVI_KONF_LISTA.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.OKOVI_KONF_LISTA);
+                                    columnForCurrency += 2;
                                     break;
                                 case 12:
-                                    cellOfCurrency = row.createCell(lastColumn + 32);
-                                    cellOfCurrency.setCellValue(PriceCat.EUR_KONF.getCurrency());
-                                    listOfCells.add(cellOfCurrency);
-                                    cellOfPriceCode = row.createCell(lastColumn + 33);
-                                    cellOfPriceCode.setCellValue(PriceCat.EUR_KONF.getCode());
-                                    listOfCells.add(cellOfPriceCode);
+                                    setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.EUR_KONF);
+                                    columnForCurrency += 2;
                                     break;
                             }
                         }
@@ -143,12 +96,12 @@ public class SourceWorkbook {
         }
     }
     
-    public static void printListOfList(List<List<Cell>> listOfPrices) {
-        for(List<Cell> listOfCells : listOfPrices) {
-            for(Cell cell : listOfCells) {
-                System.out.print(cell + " ");
-            }
-            System.out.println();
-        }
+    public static void setCellsOfCurrencyAndPriceCode(List<Cell> listOfCells, Row row, int lastColumn, PriceCat priceCat){
+        Cell cellOfCurrency = row.createCell(lastColumn);
+        cellOfCurrency.setCellValue(priceCat.getCurrency());
+        listOfCells.add(cellOfCurrency);
+        Cell cellOfPriceCode = row.createCell(lastColumn + 1);
+        cellOfPriceCode.setCellValue(priceCat.getCode());
+        listOfCells.add(cellOfPriceCode);
     }
 }
