@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,6 +41,11 @@ public class DestinationWorkbook {
                         break;
                     case NUMERIC :
                         cellOfNewTable.setCellValue(cell.getNumericCellValue());
+                        if(j == 2) {
+                            CellStyle style = wb.createCellStyle();
+                            style.setDataFormat(wb.createDataFormat().getFormat("###,###,##0.0000"));
+                            cellOfNewTable.setCellStyle(style);
+                        }
                         break;
                     case BLANK :
                         break;
