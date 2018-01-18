@@ -15,11 +15,12 @@ public class SourceWorkbook {
     private Workbook wb;
     private Sheet sheet;
     private List<List<Cell>> listOfPrices = new ArrayList<>();
-    private int[] columns = {0, 1, 2, 3, 4, 5, 6};
+    private Columns[] columns;
     
-    public SourceWorkbook(String filename) throws InvalidFormatException, IOException {
+    public SourceWorkbook(String filename, Columns[] columns) throws InvalidFormatException, IOException {
         wb = WorkbookFactory.create(new File(filename));
         sheet = wb.getSheetAt(0);
+        this.columns = columns;
     }
 
     public List<List<Cell>> getlistOfPrices() {
@@ -30,59 +31,58 @@ public class SourceWorkbook {
         int lastRow = sheet.getLastRowNum();
         for(int rowNum = 1; rowNum <= lastRow; rowNum++) {
             Row row = sheet.getRow(rowNum);
-            
             int lastColumn = row.getLastCellNum();
             int columnForCurrency = lastColumn + 1;
             List<Cell> listOfCells = new ArrayList<>();
-            for(int column : columns) {
-                if(column < lastColumn && !row.getCell(column).toString().equals("")) {
-                    listOfCells.add(row.getCell(column));
+            for(Columns column : columns) {
+                if(column.ordinal() < lastColumn && !row.getCell(column.ordinal()).toString().equals("")) {
+                    listOfCells.add(row.getCell(column.ordinal()));
                     switch(column) {
-                        case 1:
+                        case B:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.HU_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case 2:
+                        case C:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.AGRAM_TR);
                             columnForCurrency += 2;
                             break;
-                        case 3:
+                        case D:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.AGRAM_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case 4:
+                        case E:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.OKOVI_TR);
                             columnForCurrency += 2;
                             break;
-                        case 5:
+                        case F:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.OKOVI_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case 6:
+                        case G:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.EUR_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case 7:
+                        case H:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.HU_KONF);
                             columnForCurrency += 2;
                             break;
-                        case 8:
+                        case I:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.AGRAM_KONF_TR);
                             columnForCurrency += 2;
                             break;
-                        case 9:
+                        case J:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.AGRAM_KONF_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case 10:
+                        case K:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.OKOVI_KONF_TR);
                             columnForCurrency += 2;
                             break;
-                        case 11:
+                        case L:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.OKOVI_KONF_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case 12:
+                        case M:
                             setCellsOfCurrencyAndPriceCode(listOfCells, row, columnForCurrency, PriceCat.EUR_KONF);
                             columnForCurrency += 2;
                             break;

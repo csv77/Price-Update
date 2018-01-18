@@ -18,7 +18,7 @@ public class DestinationWorkbook {
     
     public DestinationWorkbook(List<List<Cell>> listOfPrices) throws InvalidFormatException, IOException {
         wb = new XSSFWorkbook();
-        sheet = wb.createSheet("PriceUpdate");
+        sheet = wb.createSheet("PricesToUpload");
         dataReorder = new DataReorder(listOfPrices);
     }
 
