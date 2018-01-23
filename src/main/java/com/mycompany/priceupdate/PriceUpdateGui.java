@@ -35,8 +35,8 @@ public class PriceUpdateGui extends Application {
         VBox vBox = new VBox(5);
         vBox.setAlignment(Pos.CENTER);
         
-        TextField tfColumns = new TextField("B, C, D, E, F, G, H");
-        vBox.getChildren().addAll(btOpenFile, tfColumns);
+        TextField tfColumnsForPrices = new TextField("J, K, L, M, N, O, P, Q, R, S, T, U");
+        vBox.getChildren().addAll(btOpenFile, tfColumnsForPrices);
         borderPane.setTop(vBox);
         
         btOpenFile.setOnAction(e -> {
@@ -59,9 +59,9 @@ public class PriceUpdateGui extends Application {
         btStart.setOnAction(e -> {
             if(file != null) {
                 try {
-                    List<String> cols = textFieldToStringList(tfColumns);
-                    if(cols != null) {
-                        columns = getColumnsFromStringList(cols);
+                    List<String> colsForPrices = textFieldToStringList(tfColumnsForPrices);
+                    if(colsForPrices != null) {
+                        columns = getColumnsFromStringList(colsForPrices);
                         Controller controller = new Controller(initialDirectory + file.getName(),
                                 initialDirectory + destinationFilename, columns);
                         lbStatus.setText("File is completed.");
