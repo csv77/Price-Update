@@ -12,25 +12,34 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class DestinationWorkbook {
     private Workbook wb;
-    private Sheet sheet;
+    private Sheet sheet1;
+    private Sheet sheet2;
     private List<List<Cell>> newListOfPrices;
-    private DataReorder dataReorder;
+    private DataReorder pricesReorder;
+    private List<List<Cell>> newListOfSchema;
+    private DataReorder schemaReorder;
     
-    public DestinationWorkbook(List<List<Cell>> listOfPrices) throws InvalidFormatException, IOException {
+    public DestinationWorkbook(List<List<Cell>> listOfPrices,
+            List<List<Cell>> listOfSchema) throws InvalidFormatException, IOException {
         wb = new XSSFWorkbook();
-        sheet = wb.createSheet("PricesToUpload");
-        dataReorder = new DataReorder(listOfPrices);
+        sheet1 = wb.createSheet("PricesToUpload");
+        pricesReorder = new DataReorder(listOfPrices);
+        sheet2 = wb.createSheet("SchemaToUpload");
+        schemaReorder = new DataReorder(listOfSchema);
     }
 
     public Workbook getWb() {
+        loadData(newListOfPrices, pricesReorder, sheet1);
+        loadData(newListOfSchema, schemaReorder, sheet2);
         return wb;
     }
 
-    public void loadData() {
-        newListOfPrices = dataReorder.reorderData();
+    private void loadData(List<List<Cell>> newListOfData, DataReorder dataReorder,
+            Sheet sheet) {
+        newListOfData = dataReorder.reorderData();
         
         int i = 0;
-        for(List<Cell> cells : newListOfPrices) {
+        for(List<Cell> cells : newListOfData) {
             Row row = sheet.createRow(i++);
             int j = 0;
             for(Cell cell : cells) {

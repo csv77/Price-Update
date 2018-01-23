@@ -8,16 +8,18 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class Controller {
     private SourceWorkbook srWb;
     private DestinationWorkbook dWb;
-    private Columns[] columns;
+    private Columns[] columnsForPrices;
+    private Columns[] columnsForSchema;
     
-    public Controller(String inputFilename, String outputFilename, Columns[] columns) throws InvalidFormatException, IOException {
-        this.columns = columns;
-        srWb = new SourceWorkbook(inputFilename, columns);
-        srWb.fillUpListOfPrices();
-
-        dWb = new DestinationWorkbook(srWb.getlistOfPrices());
-        dWb.loadData();
-
+    public Controller(String inputFilename, String outputFilename, Columns[] columnsForPrices,
+            Columns[] columnsForSchema) throws InvalidFormatException, IOException {
+        this.columnsForPrices = columnsForPrices;
+        this.columnsForSchema = columnsForSchema;
+        srWb = new SourceWorkbook(inputFilename, columnsForPrices, columnsForSchema);
+        srWb.fillUpListOfPricesAndListOfSchema();
+        
+        dWb = new DestinationWorkbook(srWb.getlistOfPrices(), srWb.getListOfSchema());
+        
         Workbook wb = dWb.getWb();
 
         FileOutputStream fileOut = new FileOutputStream(outputFilename);

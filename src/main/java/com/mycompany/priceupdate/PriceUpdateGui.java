@@ -1,7 +1,6 @@
 package com.mycompany.priceupdate;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -24,7 +24,8 @@ public class PriceUpdateGui extends Application {
     private File file;
     private String initialDirectory;
     private String destinationFilename = "árfelvitel_táblázat.xlsx";
-    private Columns[] columns;
+    private Columns[] columnsForPrices;
+    private Columns[] columnsForSchema;
     
     @Override
     public void start(Stage primaryStage) {
@@ -36,7 +37,18 @@ public class PriceUpdateGui extends Application {
         vBox.setAlignment(Pos.CENTER);
         
         TextField tfColumnsForPrices = new TextField("J, K, L, M, N, O, P, Q, R, S, T, U");
-        vBox.getChildren().addAll(btOpenFile, tfColumnsForPrices);
+        Label lbPrices = new Label("Columns of prices ");
+        TextField tfColumnsForSchema = new TextField("V, W, X, Y, Z, AA, AB");
+        Label lbSchema = new Label("Columns of schema ");
+        
+        GridPane gridPane = new GridPane();
+        gridPane.add(lbPrices, 0, 0);
+        gridPane.add(lbSchema, 0, 1);
+        gridPane.add(tfColumnsForPrices, 1, 0);
+        gridPane.add(tfColumnsForSchema, 1, 1);
+        gridPane.setAlignment(Pos.CENTER);
+        
+        vBox.getChildren().addAll(btOpenFile, gridPane);
         borderPane.setTop(vBox);
         
         btOpenFile.setOnAction(e -> {
@@ -60,17 +72,17 @@ public class PriceUpdateGui extends Application {
             if(file != null) {
                 try {
                     List<String> colsForPrices = textFieldToStringList(tfColumnsForPrices);
-                    if(colsForPrices != null) {
-                        columns = getColumnsFromStringList(colsForPrices);
+                    List<String> colsForSchema = textFieldToStringList(tfColumnsForSchema);
+                    if(colsForPrices != null && colsForSchema != null) {
+                        columnsForPrices = getColumnsFromStringList(colsForPrices);
+                        columnsForSchema = getColumnsFromStringList(colsForSchema);
                         Controller controller = new Controller(initialDirectory + file.getName(),
-                                initialDirectory + destinationFilename, columns);
+                                initialDirectory + destinationFilename, columnsForPrices, columnsForSchema);
                         lbStatus.setText("File is completed.");
                     }
                     else {
                         lbStatus.setText("Invalid columns.");
                     }
-                } catch (FileNotFoundException ex) {
-                    lbStatus.setText("File not found.");
                 } catch (InvalidFormatException ex) {
                     lbStatus.setText("Invalid file format.");
                 } catch (IOException ex) {
@@ -79,7 +91,7 @@ public class PriceUpdateGui extends Application {
             }
         });
         
-        Scene scene = new Scene(borderPane, 250, 150);
+        Scene scene = new Scene(borderPane, 300, 150);
         primaryStage.setTitle("Árfelvitelhez");
         primaryStage.setScene(scene);
         primaryStage.show();
