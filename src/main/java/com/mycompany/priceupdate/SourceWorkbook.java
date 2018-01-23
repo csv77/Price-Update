@@ -40,7 +40,10 @@ public class SourceWorkbook {
                 if(column.ordinal() < lastColumn) {
                     if(row.getCell(column.ordinal()).getCellTypeEnum().equals(CellType.NUMERIC) && row.getCell(column.ordinal()).getNumericCellValue() == 0) {
                         continue;
-                    }    
+                    }
+                    if(row.getCell(column.ordinal()).toString().equals("")) {
+                        continue;
+                    }
                     listOfCells.add(row.getCell(column.ordinal()));
                     switch(column) {
                         case J:
