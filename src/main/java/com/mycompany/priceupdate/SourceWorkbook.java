@@ -107,43 +107,43 @@ public class SourceWorkbook {
             }
             listOfPrices.add(listOfCellsOfPrices);
             
-            int columnForSchema = lastColumn + 1;
+            int columnForSchema = lastColumn + 30;
             List<Cell> listOfCellsOfSchema = new ArrayList<>();
             for(Columns column : columnsForSchema) {
                 if(column.ordinal() < lastColumn) {
-                    if(row.getCell(column.ordinal()).getCellTypeEnum().equals(CellType.NUMERIC) && row.getCell(column.ordinal()).getNumericCellValue() == 0) {
-                        continue;
-                    }
+//                    if(row.getCell(column.ordinal()).getCellTypeEnum().equals(CellType.NUMERIC) && row.getCell(column.ordinal()).getNumericCellValue() == 0) {
+//                        continue;
+//                    }
                     if(row.getCell(column.ordinal()).toString().equals("")) {
                         continue;
                     }
                     listOfCellsOfSchema.add(row.getCell(column.ordinal()));
                     switch(column) {
-                        case V:
+                        case Z:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.FUVAR);
                             columnForSchema += 2;
                             break;
-                        case W:
+                        case AA:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.VAM);
                             columnForSchema += 2;
                             break;
-                        case X:
+                        case AB:
+                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.ENGEDMENY);
+                            columnForSchema += 2;
+                            break;
+                        case AC:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.EGYEB);
                             columnForSchema += 2;
                             break;
-                        case Y:
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.JUTALEK);
-                            columnForSchema += 2;
-                            break;
-                        case Z:
+                        case AD:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.HULLADEK);
                             columnForSchema += 2;
                             break;
-                        case AA:
+                        case AE:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.SZELESSEG);
                             columnForSchema += 2;
                             break;
-                        case AB:
+                        case AF:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.FIXKTG);
                             columnForSchema += 2;
                             break;

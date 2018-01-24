@@ -38,7 +38,7 @@ public class PriceUpdateGui extends Application {
         
         TextField tfColumnsForPrices = new TextField("J, K, L, M, N, O, P, Q, R, S, T, U");
         Label lbPrices = new Label("Columns of prices ");
-        TextField tfColumnsForSchema = new TextField("V, W, X, Y, Z, AA, AB");
+        TextField tfColumnsForSchema = new TextField("Z, AA, AB, AC, AD, AE, AF");
         Label lbSchema = new Label("Columns of schema ");
         
         GridPane gridPane = new GridPane();
