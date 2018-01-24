@@ -168,13 +168,4 @@ public class SourceWorkbook {
         cellOfSchemaCode.setCellValue(schemaCat.getCode());
         listOfCells.add(cellOfSchemaCode);
     }
-    
-    private void printListOfPrices() {
-        for(List<Cell> cells : listOfPrices) {
-            for(Cell cell : cells) {
-                System.out.print(cell.toString() + " ");
-            }
-            System.out.println();
-        }
-    }
 }
