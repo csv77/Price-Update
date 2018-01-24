@@ -100,7 +100,7 @@ public class PriceUpdateGui extends Application {
     private List<String> textFieldToStringList(TextField tfCol) {
         String txt = tfCol.getText();
         String[] columns = txt.toUpperCase().split("[,\\s]");
-        List<String> cols = new ArrayList();
+        List<String> cols = new ArrayList<String>();
         cols.add("A");
         for(String column : columns) {
             if(!column.equals("")) {

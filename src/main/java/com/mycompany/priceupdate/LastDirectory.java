@@ -23,7 +23,6 @@ public final class LastDirectory {
     }
     
     public static String loadThePath() {
-        String pathname;
         try (DataInputStream input = new DataInputStream(new FileInputStream("path.dat"))) {
             return input.readUTF();
         } catch (FileNotFoundException ex) {

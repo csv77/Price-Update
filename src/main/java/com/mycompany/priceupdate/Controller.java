@@ -8,13 +8,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class Controller {
     private SourceWorkbook srWb;
     private DestinationWorkbook dWb;
-    private Columns[] columnsForPrices;
-    private Columns[] columnsForSchema;
     
     public Controller(String inputFilename, String outputFilename, Columns[] columnsForPrices,
             Columns[] columnsForSchema) throws InvalidFormatException, IOException {
-        this.columnsForPrices = columnsForPrices;
-        this.columnsForSchema = columnsForSchema;
         srWb = new SourceWorkbook(inputFilename, columnsForPrices, columnsForSchema);
         srWb.fillUpListOfPricesAndListOfSchema();
         
