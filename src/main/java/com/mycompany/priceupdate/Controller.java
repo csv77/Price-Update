@@ -8,17 +8,11 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class Controller {
     private SourceWorkbook srWb;
     private DestinationWorkbook dWb;
-    private String inputFilename;
     private String outputFilename;
-    private Columns[] columnsForPrices;
-    private Columns[] columnsForSchema;
 
    public Controller(String inputFilename, String outputFilename, Columns[] columnsForPrices,
             Columns[] columnsForSchema) {
-        this.inputFilename = inputFilename;
         this.outputFilename = outputFilename;
-        this.columnsForPrices = columnsForPrices;
-        this.columnsForSchema = columnsForSchema;
         srWb = new SourceWorkbook(inputFilename, columnsForPrices, columnsForSchema);
     }
     
