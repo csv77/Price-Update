@@ -13,8 +13,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class SourceWorkbook {
-    private Workbook wb1;
-    private Sheet sheetOfWb1;
+    private Workbook wb;
+    private Sheet sheet1;
     private List<List<Cell>> listOfPrices = new ArrayList<>();
     private Columns[] columnsForPrices;
     private List<List<Cell>> listOfSchema = new ArrayList<>();
@@ -26,8 +26,8 @@ public class SourceWorkbook {
         this.columnsForPrices = columnsForPrices;
         this.columnsForSchema = columnsForSchema;
         this.filename = filename;
-        wb1 = WorkbookFactory.create(new FileInputStream(filename));
-        sheetOfWb1 = wb1.getSheetAt(0);
+        wb = WorkbookFactory.create(new FileInputStream(filename));
+        sheet1 = wb.getSheetAt(0);
     }
 
     public String getFilename() {
@@ -43,9 +43,9 @@ public class SourceWorkbook {
     }
     
     public void fillUpListOfPricesAndListOfSchema() {
-        int lastRow = sheetOfWb1.getLastRowNum();
+        int lastRow = sheet1.getLastRowNum();
         for(int rowNum = 5; rowNum <= lastRow; rowNum++) {
-            Row row = sheetOfWb1.getRow(rowNum);
+            Row row = sheet1.getRow(rowNum);
                         
             int lastColumn = row.getLastCellNum();
             int columnForCurrency = lastColumn + 1;
@@ -179,9 +179,9 @@ public class SourceWorkbook {
     }
     
     public Workbook modifySourceWoorkbook() throws IOException, InvalidFormatException {
-        int lastRow = sheetOfWb1.getLastRowNum();
+        int lastRow = sheet1.getLastRowNum();
         for(int rowNum = 5; rowNum <= lastRow; rowNum++) {
-            Row row = sheetOfWb1.getRow(rowNum);
+            Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
             if(cell.getStringCellValue().charAt(0) == '3') {
                 Cell cellOfWidth = row.getCell(Columns.AG.ordinal());
@@ -195,6 +195,6 @@ public class SourceWorkbook {
                 }
             }
         }
-        return wb1;
+        return wb;
     }
 }
