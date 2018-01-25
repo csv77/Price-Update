@@ -50,7 +50,7 @@ public class SourceWorkbook {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
             if(cell == null || cell.getStringCellValue().equals("Cikkszám")) {
-                continue;
+            	continue;
             }
             
             int lastColumn = row.getLastCellNum();
