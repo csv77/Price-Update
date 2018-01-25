@@ -58,16 +58,10 @@ public class PriceUpdateGui extends Application {
                 List<String> colsForPrices = textFieldToStringList(tfColumnsForPrices);
                 List<String> colsForSchema = textFieldToStringList(tfColumnsForSchema);
                 if(colsForPrices != null && colsForSchema != null) {
-                    try {
-                        columnsForPrices = getColumnsFromStringList(colsForPrices);
-                        columnsForSchema = getColumnsFromStringList(colsForSchema);
-                        controller = new Controller(initialDirectory + file.getName(),
-                                initialDirectory + destinationFilename, columnsForPrices, columnsForSchema);
-                    } catch (InvalidFormatException ex) {
-                        lbStatus.setText("Invalid file format.");
-                    } catch (IOException ex) {
-                        lbStatus.setText("Cannot open the file.");
-                    }
+                    columnsForPrices = getColumnsFromStringList(colsForPrices);
+                    columnsForSchema = getColumnsFromStringList(colsForSchema);
+                    controller = new Controller(initialDirectory + file.getName(),
+                            initialDirectory + destinationFilename, columnsForPrices, columnsForSchema);
                 }
                 else {
                     lbStatus.setText("Invalid columns.");

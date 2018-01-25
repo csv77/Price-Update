@@ -14,7 +14,7 @@ public class Controller {
     private Columns[] columnsForSchema;
 
    public Controller(String inputFilename, String outputFilename, Columns[] columnsForPrices,
-            Columns[] columnsForSchema) throws InvalidFormatException, IOException {
+            Columns[] columnsForSchema) {
         this.inputFilename = inputFilename;
         this.outputFilename = outputFilename;
         this.columnsForPrices = columnsForPrices;

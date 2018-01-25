@@ -22,12 +22,10 @@ public class SourceWorkbook {
     private String filename;
     
     public SourceWorkbook(String filename, Columns[] columnsForPrices,
-            Columns[] columnsForSchema) throws InvalidFormatException, IOException {
+            Columns[] columnsForSchema) {
         this.columnsForPrices = columnsForPrices;
         this.columnsForSchema = columnsForSchema;
         this.filename = filename;
-        wb = WorkbookFactory.create(new FileInputStream(filename));
-        sheet1 = wb.getSheetAt(0);
     }
 
     public String getFilename() {
@@ -42,11 +40,19 @@ public class SourceWorkbook {
         return listOfSchema;
     }
     
-    public void fillUpListOfPricesAndListOfSchema() {
+    public void fillUpListOfPricesAndListOfSchema() throws IOException, InvalidFormatException {
+        wb = WorkbookFactory.create(new FileInputStream(filename));
+        sheet1 = wb.getSheetAt(0);
+        listOfPrices.clear();
+        listOfSchema.clear();
         int lastRow = sheet1.getLastRowNum();
-        for(int rowNum = 5; rowNum <= lastRow; rowNum++) {
+        for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
-                        
+            Cell cell = row.getCell(0);
+            if(cell == null || cell.getStringCellValue().equals("Cikkszám")) {
+                continue;
+            }
+            
             int lastColumn = row.getLastCellNum();
             int columnForCurrency = lastColumn + 1;
             List<Cell> listOfCellsOfPrices = new ArrayList<>();
@@ -179,6 +185,8 @@ public class SourceWorkbook {
     }
     
     public Workbook modifySourceWoorkbook() throws IOException, InvalidFormatException {
+        wb = WorkbookFactory.create(new FileInputStream(filename));
+        sheet1 = wb.getSheetAt(0);
         int lastRow = sheet1.getLastRowNum();
         for(int rowNum = 5; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
