@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -26,14 +25,12 @@ public class PriceUpdateGui extends Application {
     private String destinationFilename = "árfelvitel_táblázat.xlsx";
     private Columns[] columnsForPrices;
     private Columns[] columnsForSchema;
+    private Controller controller;
     
     @Override
     public void start(Stage primaryStage) {
-        BorderPane borderPane = new BorderPane();
-        borderPane.setPadding(new Insets(10));
-        Button btOpenFile = new Button("Open the excel file");
-        
         VBox vBox = new VBox(5);
+        vBox.setPadding(new Insets(10));
         vBox.setAlignment(Pos.CENTER);
         
         TextField tfColumnsForPrices = new TextField("J, K, L, M, N, O, P, Q, R, S, T, U");
@@ -47,10 +44,8 @@ public class PriceUpdateGui extends Application {
         gridPane.add(tfColumnsForPrices, 1, 0);
         gridPane.add(tfColumnsForSchema, 1, 1);
         gridPane.setAlignment(Pos.CENTER);
-        
-        vBox.getChildren().addAll(btOpenFile, gridPane);
-        borderPane.setTop(vBox);
-        
+
+        Button btOpenFile = new Button("Open the excel file");
         btOpenFile.setOnAction(e -> {
             lbStatus.setText("");
             chooser.setTitle("Open");
@@ -60,29 +55,35 @@ public class PriceUpdateGui extends Application {
             if(file != null) {
                 initialDirectory = file.getParent() + "\\";
                 LastDirectory.saveThePath(initialDirectory);
+                List<String> colsForPrices = textFieldToStringList(tfColumnsForPrices);
+                List<String> colsForSchema = textFieldToStringList(tfColumnsForSchema);
+                if(colsForPrices != null && colsForSchema != null) {
+                    try {
+                        columnsForPrices = getColumnsFromStringList(colsForPrices);
+                        columnsForSchema = getColumnsFromStringList(colsForSchema);
+                        controller = new Controller(initialDirectory + file.getName(),
+                                initialDirectory + destinationFilename, columnsForPrices, columnsForSchema);
+                    } catch (InvalidFormatException ex) {
+                        lbStatus.setText("Invalid file format.");
+                    } catch (IOException ex) {
+                        lbStatus.setText("Cannot open the file.");
+                    }
+                }
+                else {
+                    lbStatus.setText("Invalid columns.");
+                }
             }
         });
         
-        Button btStart = new Button("Start");
-        borderPane.setCenter(btStart);
-        borderPane.setBottom(lbStatus);
-        BorderPane.setAlignment(lbStatus, Pos.CENTER);
+        Button btCreateDestinationExcelFile = new Button("Create PriceUpload excel");
+        Button btCreateModifiedSourceExcelFile = new Button("Create modified source excel");
+        vBox.getChildren().addAll(btOpenFile, gridPane, btCreateModifiedSourceExcelFile, btCreateDestinationExcelFile, lbStatus);
         
-        btStart.setOnAction(e -> {
-            if(file != null) {
+        btCreateDestinationExcelFile.setOnAction(e -> {
+            if(controller != null) {
                 try {
-                    List<String> colsForPrices = textFieldToStringList(tfColumnsForPrices);
-                    List<String> colsForSchema = textFieldToStringList(tfColumnsForSchema);
-                    if(colsForPrices != null && colsForSchema != null) {
-                        columnsForPrices = getColumnsFromStringList(colsForPrices);
-                        columnsForSchema = getColumnsFromStringList(colsForSchema);
-                        Controller controller = new Controller(initialDirectory + file.getName(),
-                                initialDirectory + destinationFilename, columnsForPrices, columnsForSchema);
-                        lbStatus.setText("File is completed.");
-                    }
-                    else {
-                        lbStatus.setText("Invalid columns.");
-                    }
+                    controller.makeDestinationExcelFile();
+                    lbStatus.setText("PriceUpload excel is finished.");
                 } catch (InvalidFormatException ex) {
                     lbStatus.setText("Invalid file format.");
                 } catch (IOException ex) {
@@ -91,7 +92,20 @@ public class PriceUpdateGui extends Application {
             }
         });
         
-        Scene scene = new Scene(borderPane, 300, 150);
+        btCreateModifiedSourceExcelFile.setOnAction(e -> {
+            if(controller != null) {
+                try {
+                    controller.modifiySourceExcelFile();
+                    lbStatus.setText("New source excel is finished.");
+                } catch (InvalidFormatException ex) {
+                    lbStatus.setText("Invalid file format.");
+                } catch (IOException ex) {
+                    lbStatus.setText("Cannot open the file.");
+                }
+            }
+        });
+        
+        Scene scene = new Scene(vBox, 400, 180);
         primaryStage.setTitle("PriceUpload");
         primaryStage.setScene(scene);
         primaryStage.show();

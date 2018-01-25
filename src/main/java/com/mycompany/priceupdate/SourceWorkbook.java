@@ -1,6 +1,6 @@
 package com.mycompany.priceupdate;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,21 +13,27 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class SourceWorkbook {
-    private Workbook wb;
-    private Sheet sheet;
+    private Workbook wb1;
+    private Sheet sheetOfWb1;
     private List<List<Cell>> listOfPrices = new ArrayList<>();
     private Columns[] columnsForPrices;
     private List<List<Cell>> listOfSchema = new ArrayList<>();
     private Columns[] columnsForSchema;
+    private String filename;
     
     public SourceWorkbook(String filename, Columns[] columnsForPrices,
             Columns[] columnsForSchema) throws InvalidFormatException, IOException {
-        wb = WorkbookFactory.create(new File(filename));
-        sheet = wb.getSheetAt(0);
         this.columnsForPrices = columnsForPrices;
         this.columnsForSchema = columnsForSchema;
+        this.filename = filename;
+        wb1 = WorkbookFactory.create(new FileInputStream(filename));
+        sheetOfWb1 = wb1.getSheetAt(0);
     }
 
+    public String getFilename() {
+        return filename;
+    }
+    
     public List<List<Cell>> getlistOfPrices() {
         return listOfPrices;
     }
@@ -37,9 +43,9 @@ public class SourceWorkbook {
     }
     
     public void fillUpListOfPricesAndListOfSchema() {
-        int lastRow = sheet.getLastRowNum();
+        int lastRow = sheetOfWb1.getLastRowNum();
         for(int rowNum = 5; rowNum <= lastRow; rowNum++) {
-            Row row = sheet.getRow(rowNum);
+            Row row = sheetOfWb1.getRow(rowNum);
                         
             int lastColumn = row.getLastCellNum();
             int columnForCurrency = lastColumn + 1;
@@ -170,5 +176,25 @@ public class SourceWorkbook {
         Cell cellOfSchemaCode = row.createCell(lastColumn + 1);
         cellOfSchemaCode.setCellValue(schemaCat.getCode());
         listOfCells.add(cellOfSchemaCode);
+    }
+    
+    public Workbook modifySourceWoorkbook() throws IOException, InvalidFormatException {
+        int lastRow = sheetOfWb1.getLastRowNum();
+        for(int rowNum = 5; rowNum <= lastRow; rowNum++) {
+            Row row = sheetOfWb1.getRow(rowNum);
+            Cell cell = row.getCell(0);
+            if(cell.getStringCellValue().charAt(0) == '3') {
+                Cell cellOfWidth = row.getCell(Columns.AG.ordinal());
+                if(cellOfWidth == null) {
+                    continue;
+                }
+                double width = cellOfWidth.getNumericCellValue();
+                if(width != 0) {
+                    Cell cellOfSchemaWidth = row.getCell(Columns.AE.ordinal());
+                    cellOfSchemaWidth.setCellValue(width / 10 - 100);
+                }
+            }
+        }
+        return wb1;
     }
 }
