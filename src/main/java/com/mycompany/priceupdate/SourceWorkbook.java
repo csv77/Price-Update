@@ -131,31 +131,31 @@ public class SourceWorkbook {
                     }
                     listOfCellsOfSchema.add(row.getCell(column.ordinal()));
                     switch(column) {
-                        case Z:
+                        case AA:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.FUVAR);
                             columnForSchema += 2;
                             break;
-                        case AA:
+                        case AB:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.VAM);
                             columnForSchema += 2;
                             break;
-                        case AB:
+                        case AC:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.ENGEDMENY);
                             columnForSchema += 2;
                             break;
-                        case AC:
+                        case AD:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.EGYEB);
                             columnForSchema += 2;
                             break;
-                        case AD:
+                        case AE:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.HULLADEK);
                             columnForSchema += 2;
                             break;
-                        case AE:
+                        case AF:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.SZELESSEG);
                             columnForSchema += 2;
                             break;
-                        case AF:
+                        case AG:
                             setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.FIXKTG);
                             columnForSchema += 2;
                             break;
