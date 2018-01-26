@@ -192,13 +192,13 @@ public class SourceWorkbook {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
             if(cell.getStringCellValue().charAt(0) == '3') {
-                Cell cellOfWidth = row.getCell(Columns.AG.ordinal());
+                Cell cellOfWidth = row.getCell(Columns.AH.ordinal());
                 if(cellOfWidth == null) {
                     continue;
                 }
                 double width = cellOfWidth.getNumericCellValue();
                 if(width != 0) {
-                    Cell cellOfSchemaWidth = row.getCell(Columns.AE.ordinal());
+                    Cell cellOfSchemaWidth = row.getCell(Columns.AF.ordinal());
                     cellOfSchemaWidth.setCellValue(width / 10 - 100);
                 }
             }
