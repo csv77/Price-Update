@@ -48,7 +48,7 @@ public class DestinationWorkbook {
                     case STRING :
                         cellOfNewTable.setCellValue(cell.getStringCellValue());
                         break;
-                    case NUMERIC :
+                    case NUMERIC : case FORMULA :
                         cellOfNewTable.setCellValue(cell.getNumericCellValue());
                         if(j == 2) {
                             CellStyle style = wb.createCellStyle();
@@ -60,15 +60,15 @@ public class DestinationWorkbook {
                         break;
                     case _NONE :
                         break;
-                    case FORMULA :
-                        cellOfNewTable.setCellFormula(cell.getCellFormula());
-                        break;
                 }
             }
         }
-        int lastCellNum = sheet.getRow(0).getLastCellNum();
-        for(int column = 0; column < lastCellNum; column++) {
-            sheet.autoSizeColumn(column);
+        Row row = sheet.getRow(0);
+        if(row != null) {
+            int lastCellNum = row.getLastCellNum();
+            for(int column = 0; column < lastCellNum; column++) {
+                sheet.autoSizeColumn(column);
+            }
         }
     }
 }
