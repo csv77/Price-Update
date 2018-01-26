@@ -2,16 +2,12 @@ package com.mycompany.priceupdate;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -23,8 +19,6 @@ public class PriceUpdateGui extends Application {
     private File file;
     private String initialDirectory;
     private String destinationFilename = "árfelvitel_táblázat.xlsx";
-    private Columns[] columnsForPrices;
-    private Columns[] columnsForSchema;
     private Controller controller;
     
     @Override
@@ -32,18 +26,6 @@ public class PriceUpdateGui extends Application {
         VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(10));
         vBox.setAlignment(Pos.CENTER);
-        
-        TextField tfColumnsForPrices = new TextField("J, K, L, M, N, O, P, Q, R, S, T, U");
-        Label lbPrices = new Label("Columns of prices ");
-        TextField tfColumnsForSchema = new TextField("AA, AB, AC, AD, AE, AF, AG");
-        Label lbSchema = new Label("Columns of schema ");
-        
-        GridPane gridPane = new GridPane();
-        gridPane.add(lbPrices, 0, 0);
-        gridPane.add(lbSchema, 0, 1);
-        gridPane.add(tfColumnsForPrices, 1, 0);
-        gridPane.add(tfColumnsForSchema, 1, 1);
-        gridPane.setAlignment(Pos.CENTER);
 
         Button btOpenFile = new Button("Open the excel file");
         btOpenFile.setOnAction(e -> {
@@ -55,23 +37,20 @@ public class PriceUpdateGui extends Application {
             if(file != null) {
                 initialDirectory = file.getParent() + "\\";
                 LastDirectory.saveThePath(initialDirectory);
-                List<String> colsForPrices = textFieldToStringList(tfColumnsForPrices);
-                List<String> colsForSchema = textFieldToStringList(tfColumnsForSchema);
-                if(colsForPrices != null && colsForSchema != null) {
-                    columnsForPrices = getColumnsFromStringList(colsForPrices);
-                    columnsForSchema = getColumnsFromStringList(colsForSchema);
+                try {
                     controller = new Controller(initialDirectory + file.getName(),
-                            initialDirectory + destinationFilename, columnsForPrices, columnsForSchema);
-                }
-                else {
-                    lbStatus.setText("Invalid columns.");
+                            initialDirectory + destinationFilename);
+                } catch (IOException ex) {
+                    lbStatus.setText("Cannot open the file.");
+                } catch (InvalidFormatException ex) {
+                    lbStatus.setText("Invalid file format.");
                 }
             }
         });
         
         Button btCreateDestinationExcelFile = new Button("Create PriceUpload excel");
         Button btCreateModifiedSourceExcelFile = new Button("Create modified source excel");
-        vBox.getChildren().addAll(btOpenFile, gridPane, btCreateModifiedSourceExcelFile, btCreateDestinationExcelFile, lbStatus);
+        vBox.getChildren().addAll(btOpenFile, btCreateModifiedSourceExcelFile, btCreateDestinationExcelFile, lbStatus);
         
         btCreateDestinationExcelFile.setOnAction(e -> {
             if(controller != null) {
@@ -103,35 +82,6 @@ public class PriceUpdateGui extends Application {
         primaryStage.setTitle("PriceUpload");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-    
-    private List<String> textFieldToStringList(TextField tfCol) {
-        String txt = tfCol.getText();
-        String[] columns = txt.toUpperCase().split("[,\\s]");
-        List<String> cols = new ArrayList<String>();
-        cols.add("A");
-        for(String column : columns) {
-            if(!column.equals("")) {
-                cols.add(column);
-            }
-        }
-        for(String column : cols) {
-            for(int i = 0; i < column.length(); i++) {
-                if(column.charAt(i) < 'A' || column.charAt(i) > 'Z') {
-                    return null;
-                }
-            }
-        }
-        return cols;
-    }
-    
-    private Columns[] getColumnsFromStringList(List<String> cols) {
-        Columns[] columns = new Columns[cols.size()];
-        int i = 0;
-        for(String col : cols) {
-            columns[i++] = Columns.valueOf(col);
-        }
-        return columns;
     }
 
     public static void main(String[] args) {

@@ -10,10 +10,9 @@ public class Controller {
     private DestinationWorkbook dWb;
     private String outputFilename;
 
-   public Controller(String inputFilename, String outputFilename, Columns[] columnsForPrices,
-            Columns[] columnsForSchema) {
+   public Controller(String inputFilename, String outputFilename) throws IOException, InvalidFormatException {
         this.outputFilename = outputFilename;
-        srWb = new SourceWorkbook(inputFilename, columnsForPrices, columnsForSchema);
+        srWb = new SourceWorkbook(inputFilename);
     }
     
     public void makeDestinationExcelFile() throws InvalidFormatException, IOException {

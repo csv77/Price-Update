@@ -15,17 +15,14 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 public class SourceWorkbook {
     private Workbook wb;
     private Sheet sheet1;
+    private List<String> headerList;
     private List<List<Cell>> listOfPrices = new ArrayList<>();
-    private Columns[] columnsForPrices;
     private List<List<Cell>> listOfSchema = new ArrayList<>();
-    private Columns[] columnsForSchema;
     private String filename;
     
-    public SourceWorkbook(String filename, Columns[] columnsForPrices,
-            Columns[] columnsForSchema) {
-        this.columnsForPrices = columnsForPrices;
-        this.columnsForSchema = columnsForSchema;
+    public SourceWorkbook(String filename) throws IOException, InvalidFormatException {
         this.filename = filename;
+        headerList = getHeader(filename);
     }
 
     public String getFilename() {
@@ -39,6 +36,31 @@ public class SourceWorkbook {
     public List<List<Cell>> getListOfSchema() {
         return listOfSchema;
     }
+
+    public List<String> getHeaderList() {
+        return headerList;
+    }
+    
+    public List<String> getHeader(String filename) throws IOException, InvalidFormatException {
+        List<String> headerList = new ArrayList<>();
+        Workbook wb = WorkbookFactory.create(new FileInputStream(filename));
+        Sheet sheet = wb.getSheetAt(0);
+        boolean notFound = true;
+        int i = 0;
+        int lastRow = sheet.getLastRowNum();
+        while(notFound && i <= lastRow) {
+            Row row = sheet.getRow(i);
+            Cell cell = row.getCell(0);
+            if(cell != null && cell.getStringCellValue().equals("Cikkszám")) {
+                notFound = false;
+                for(Cell cellInRow : row) {
+                    headerList.add(cellInRow.getStringCellValue());
+                }
+            }
+            i++;
+        }
+        return headerList;
+    }
     
     public void fillUpListOfPricesAndListOfSchema() throws IOException, InvalidFormatException {
         wb = WorkbookFactory.create(new FileInputStream(filename));
@@ -49,124 +71,118 @@ public class SourceWorkbook {
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
-            if(cell == null || cell.getStringCellValue().equals("Cikkszám")) {
+            if(cell == null || cell.getStringCellValue().equals("Cikkszám") || cell.getStringCellValue().equals("")) {
             	continue;
             }
             
             int lastColumn = row.getLastCellNum();
             int columnForCurrency = lastColumn + 1;
             List<Cell> listOfCellsOfPrices = new ArrayList<>();
-            for(Columns column : columnsForPrices) {
-                if(column.ordinal() < lastColumn) {
-                    if(row.getCell(column.ordinal()).getCellTypeEnum().equals(CellType.NUMERIC) && row.getCell(column.ordinal()).getNumericCellValue() == 0) {
-                        continue;
-                    }
-                    if(row.getCell(column.ordinal()).toString().equals("")) {
-                        continue;
-                    }
-                    listOfCellsOfPrices.add(row.getCell(column.ordinal()));
-                    switch(column) {
-                        case J:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.EUR_LISTA);
-                            columnForCurrency += 2;
-                            break;
-                        case K:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.HU_LISTA);
-                            columnForCurrency += 2;
-                            break;
-                        case L:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.AGRAM_KONF_LISTA);
-                            columnForCurrency += 2;
-                            break;
-                        case M:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.AGRAM_KONF_TR);
-                            columnForCurrency += 2;
-                            break;
-                        case N:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.AGRAM_LISTA);
-                            columnForCurrency += 2;
-                            break;
-                        case O:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.AGRAM_TR);
-                            columnForCurrency += 2;
-                            break;
-                        case P:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.OKOVI_KONF_LISTA);
-                            columnForCurrency += 2;
-                            break;
-                        case Q:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.OKOVI_KONF_TR);
-                            columnForCurrency += 2;
-                            break;
-                        case R:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.OKOVI_LISTA);
-                            columnForCurrency += 2;
-                            break;
-                        case S:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.OKOVI_TR);
-                            columnForCurrency += 2;
-                            break;
-                        case T:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.EUR_KONF);
-                            columnForCurrency += 2;
-                            break;
-                        case U:
-                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, PriceCat.HU_KONF);
-                            columnForCurrency += 2;
-                            break;
-                    }
-                }
-            }
-            listOfPrices.add(listOfCellsOfPrices);
+            listOfCellsOfPrices.add(cell);
             
             int columnForSchema = lastColumn + 30;
             List<Cell> listOfCellsOfSchema = new ArrayList<>();
-            for(Columns column : columnsForSchema) {
-                if(column.ordinal() < lastColumn) {
-                    if(row.getCell(column.ordinal()).getCellTypeEnum().equals(CellType.NUMERIC) && row.getCell(column.ordinal()).getNumericCellValue() == 0) {
+            listOfCellsOfSchema.add(cell);
+            
+            for(Headers header : Headers.values()) {
+                String category = header.getCat();
+                int index = headerList.indexOf(category);
+                if(index < lastColumn) {
+                    if(row.getCell(index).getCellTypeEnum().equals(CellType.NUMERIC) && row.getCell(index).getNumericCellValue() == 0) {
                         continue;
                     }
-                    if(row.getCell(column.ordinal()).toString().equals("")) {
+                    if(row.getCell(index).toString().equals("")) {
                         continue;
                     }
-                    listOfCellsOfSchema.add(row.getCell(column.ordinal()));
-                    switch(column) {
-                        case AA:
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.FUVAR);
+                    
+                    switch(category) {
+                        case "Listaár (EUR)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.EUR_LISTA);
+                            columnForCurrency += 2;
+                            break;
+                        case "Listaár (Ft)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.HU_LISTA);
+                            columnForCurrency += 2;
+                            break;
+                        case "Agram konfek. lista ár (HRK)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.AGRAM_KONF_LISTA);
+                            columnForCurrency += 2;
+                            break;
+                        case "Agram konfek. transf. ár (EUR)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.AGRAM_KONF_TR);
+                            columnForCurrency += 2;
+                            break;
+                        case "Agram lista ár (HRK)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.AGRAM_LISTA);
+                            columnForCurrency += 2;
+                            break;
+                        case "Agram transfer ár (EUR)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.AGRAM_TR);
+                            columnForCurrency += 2;
+                            break;
+                        case "Okovi konfek. lista ár (SRD)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.OKOVI_KONF_LISTA);
+                            columnForCurrency += 2;
+                            break;
+                        case "Okovi konfek. transf. ár (EUR)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.OKOVI_KONF_TR);
+                            columnForCurrency += 2;
+                            break;
+                        case "Okovi lista ár (SRD)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.OKOVI_LISTA);
+                            columnForCurrency += 2;
+                            break;
+                        case "Okovi transfer ár (EUR)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.OKOVI_TR);
+                            columnForCurrency += 2;
+                            break;
+                        case "Konfekcionált ár (EUR)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.EUR_KONF);
+                            columnForCurrency += 2;
+                            break;
+                        case "Konfekcionált ár (Ft)":
+                            setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.HU_KONF);
+                            columnForCurrency += 2;
+                            break;
+                        case "K00001;0;Fuvar %":
+                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.FUVAR);
                             columnForSchema += 2;
                             break;
-                        case AB:
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.VAM);
+                        case "K00002;0;Vám %":
+                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.VAM);
                             columnForSchema += 2;
                             break;
-                        case AC:
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.ENGEDMENY);
+                        case "K00003;0;Engedmény %":
+                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.ENGEDMENY);
                             columnForSchema += 2;
                             break;
-                        case AD:
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.EGYEB);
+                        case "K00004;0;Egyéb %":
+                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.EGYEB);
                             columnForSchema += 2;
                             break;
-                        case AE:
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.HULLADEK);
+                        case "K00005;0;Hulladék / selejt %":
+                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.HULLADEK);
                             columnForSchema += 2;
                             break;
-                        case AF:
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.SZELESSEG);
+                        case "K00006;0;Szélesség %":
+                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.SZELESSEG);
                             columnForSchema += 2;
                             break;
-                        case AG:
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, SchemaCat.FIXKTG);
+                        case "K00007;1;Fix költség":
+                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.FIXKTG);
                             columnForSchema += 2;
                             break;
                     }
+                    
                 }
             }
+            listOfPrices.add(listOfCellsOfPrices);
             listOfSchema.add(listOfCellsOfSchema);
         }
     }
     
-    private static void setCellsOfCurrencyAndPriceCode(List<Cell> listOfCells, Row row, int lastColumn, PriceCat priceCat){
+    private static void setCellsOfCurrencyAndPriceCode(List<Cell> listOfCells, Row row, int lastColumn, int index, PriceCat priceCat){
+        listOfCells.add(row.getCell(index));
         Cell cellOfCurrency = row.createCell(lastColumn);
         cellOfCurrency.setCellValue(priceCat.getCurrency());
         listOfCells.add(cellOfCurrency);
@@ -175,7 +191,8 @@ public class SourceWorkbook {
         listOfCells.add(cellOfPriceCode);
     }
     
-    private static void setCellsOfSchemaAndSchemaCode(List<Cell> listOfCells, Row row, int lastColumn, SchemaCat schemaCat) {
+    private static void setCellsOfSchemaAndSchemaCode(List<Cell> listOfCells, Row row, int lastColumn, int index, SchemaCat schemaCat) {
+        listOfCells.add(row.getCell(index));
         Cell cellOfSchema = row.createCell(lastColumn);
         cellOfSchema.setCellValue(schemaCat.getType());
         listOfCells.add(cellOfSchema);
@@ -188,17 +205,21 @@ public class SourceWorkbook {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
         int lastRow = sheet1.getLastRowNum();
-        for(int rowNum = 5; rowNum <= lastRow; rowNum++) {
+        for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
+            if(cell == null || cell.getStringCellValue().equals("Cikkszám") || cell.getStringCellValue().equals("")) {
+            	continue;
+            }
+            
             if(cell.getStringCellValue().charAt(0) == '3') {
-                Cell cellOfWidth = row.getCell(Columns.AH.ordinal());
+                Cell cellOfWidth = row.getCell(headerList.indexOf("Szélesség"));
                 if(cellOfWidth == null) {
                     continue;
                 }
                 double width = cellOfWidth.getNumericCellValue();
                 if(width != 0) {
-                    Cell cellOfSchemaWidth = row.getCell(Columns.AF.ordinal());
+                    Cell cellOfSchemaWidth = row.getCell(headerList.indexOf("K00006;0;Szélesség %"));
                     cellOfSchemaWidth.setCellValue(width / 10 - 100);
                 }
             }
