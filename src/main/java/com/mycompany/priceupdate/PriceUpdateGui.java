@@ -78,7 +78,7 @@ public class PriceUpdateGui extends Application {
             }
         });
         
-        Scene scene = new Scene(vBox, 400, 180);
+        Scene scene = new Scene(vBox, 300, 150);
         primaryStage.setTitle("PriceUpload");
         primaryStage.setScene(scene);
         primaryStage.show();
