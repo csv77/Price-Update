@@ -49,7 +49,7 @@ public class PriceUpdateGui extends Application {
         });
         
         Button btCreateDestinationExcelFile = new Button("Create PriceUpload excel");
-        Button btCreateModifiedSourceExcelFile = new Button("Create modified source excel");
+        Button btCreateModifiedSourceExcelFile = new Button("Calculate width and EUR purchasing price");
         vBox.getChildren().addAll(btOpenFile, btCreateModifiedSourceExcelFile, btCreateDestinationExcelFile, lbStatus);
         
         btCreateDestinationExcelFile.setOnAction(e -> {

@@ -205,25 +205,62 @@ public class SourceWorkbook {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
         int lastRow = sheet1.getLastRowNum();
+        int lastCell = headerList.indexOf("Szélesség");
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
             if(cell == null || cell.getStringCellValue().equals("Cikkszám") || cell.getStringCellValue().equals("")) {
-            	continue;
+            	if(cell.getStringCellValue().equals("Cikkszám")) {
+                    Cell cellEur = row.createCell(lastCell + 1);
+                    cellEur.setCellValue("Beszár EUR");
+                }
+                continue;
             }
             
             if(cell.getStringCellValue().charAt(0) == '3') {
-                Cell cellOfWidth = row.getCell(headerList.indexOf("Szélesség"));
-                if(cellOfWidth == null) {
-                    continue;
-                }
-                double width = cellOfWidth.getNumericCellValue();
-                if(width != 0) {
-                    Cell cellOfSchemaWidth = row.getCell(headerList.indexOf("K00006;0;Szélesség %"));
-                    cellOfSchemaWidth.setCellValue(width / 10 - 100);
+                Cell cellOfWidth = row.getCell(lastCell);
+                if(cellOfWidth != null) {
+                    double width = cellOfWidth.getNumericCellValue();
+                    if(width != 0) {
+                        Cell cellOfSchemaWidth = row.getCell(headerList.indexOf(Headers.SZELESSEG.getCat()));
+                        cellOfSchemaWidth.setCellValue(width / 10 - 100);
+                    }
                 }
             }
+            
+            Cell cellEur = row.createCell(lastCell + 1);
+            int katar = headerList.indexOf("Szállítói utolsó szerződéses ár");
+            int fuvar = headerList.indexOf(Headers.FUVAR.getCat());
+            int vam = headerList.indexOf(Headers.VAM.getCat());
+            int engedmeny = headerList.indexOf(Headers.ENGEDMENY.getCat());
+            int egyeb = headerList.indexOf(Headers.EGYEB.getCat());
+            int hulladek = headerList.indexOf(Headers.HULLADEK.getCat());
+            int szelesseg = headerList.indexOf(Headers.SZELESSEG.getCat());
+            int fixktg = headerList.indexOf(Headers.FIXKTG.getCat());
+            
+            Cell cellKatar = row.getCell(katar);
+            Cell cellFuvar = row.getCell(fuvar);
+            Cell cellVam = row.getCell(vam);
+            Cell cellEngedmeny = row.getCell(engedmeny);
+            Cell cellEgyeb = row.getCell(egyeb);
+            Cell cellHulladek = row.getCell(hulladek);
+            Cell cellSzelesseg = row.getCell(szelesseg);
+            Cell cellFixktg = row.getCell(fixktg);
+            
+            double katarValue = cellKatar.getNumericCellValue();
+            double fuvarValue = cellFuvar.getNumericCellValue();
+            double vamValue = cellVam.getNumericCellValue();
+            double engedmenyValue = cellEngedmeny.getNumericCellValue();
+            double egyebValue = cellEgyeb.getNumericCellValue();
+            double hulladekValue = cellHulladek.getNumericCellValue();
+            double szelessegValue = cellSzelesseg.getNumericCellValue();
+            double fixktgValue = cellFixktg.getNumericCellValue();
+            
+            cellEur.setCellValue(katarValue * (1 + fuvarValue / 100) * (1 + vamValue / 100) *
+                    (1 + engedmenyValue / 100) * (1 + egyebValue / 100) * (1 + hulladekValue / 100) *
+                    (1 + szelessegValue / 100) + fixktgValue);
         }
+        sheet1.autoSizeColumn(lastCell + 1);
         return wb;
     }
 }
