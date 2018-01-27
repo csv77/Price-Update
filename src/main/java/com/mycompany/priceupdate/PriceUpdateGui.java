@@ -8,6 +8,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -20,13 +22,15 @@ public class PriceUpdateGui extends Application {
     private String initialDirectory;
     private String destinationFilename = "árfelvitel_táblázat.xlsx";
     private Controller controller;
+    private TextField tfEUR;
+    private TextField tfUSD;
     
     @Override
     public void start(Stage primaryStage) {
         VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(10));
         vBox.setAlignment(Pos.CENTER);
-
+        
         Button btOpenFile = new Button("Open the excel file");
         btOpenFile.setOnAction(e -> {
             lbStatus.setText("");
@@ -48,9 +52,18 @@ public class PriceUpdateGui extends Application {
             }
         });
         
+        GridPane gridPane = new GridPane();
+        tfEUR = new TextField();
+        tfUSD = new TextField();
+        gridPane.add(new Label("Ft/EUR rate: "), 0, 0);
+        gridPane.add(new Label("Ft/USD rate: "), 0, 1);
+        gridPane.add(tfEUR, 1, 0);
+        gridPane.add(tfUSD, 1, 1);
+        gridPane.setAlignment(Pos.CENTER);
+        
         Button btCreateDestinationExcelFile = new Button("Create PriceUpload excel");
         Button btCreateModifiedSourceExcelFile = new Button("Calculate width and EUR purchasing price");
-        vBox.getChildren().addAll(btOpenFile, btCreateModifiedSourceExcelFile, btCreateDestinationExcelFile, lbStatus);
+        vBox.getChildren().addAll(btOpenFile, gridPane, btCreateModifiedSourceExcelFile, btCreateDestinationExcelFile, lbStatus);
         
         btCreateDestinationExcelFile.setOnAction(e -> {
             if(controller != null) {
@@ -78,7 +91,7 @@ public class PriceUpdateGui extends Application {
             }
         });
         
-        Scene scene = new Scene(vBox, 300, 150);
+        Scene scene = new Scene(vBox, 300, 180);
         primaryStage.setTitle("PriceUpload");
         primaryStage.setScene(scene);
         primaryStage.show();

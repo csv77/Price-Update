@@ -216,6 +216,8 @@ public class SourceWorkbook {
             	if(cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat())) {
                     Cell cellEur = row.createCell(lastCell + 1);
                     cellEur.setCellValue("Beszár EUR");
+                    Cell cellFt = row.createCell(lastCell + 2);
+                    cellFt.setCellValue("Beszár HUF");
                 }
                 continue;
             }
@@ -233,6 +235,7 @@ public class SourceWorkbook {
             
             Cell cellEur = row.createCell(lastCell + 1);
             int katar = headerList.indexOf("Szállítói utolsó szerződéses ár");
+            int deviza = headerList.indexOf("Szállítói utolsó szerződéses ár pénznem");
             int fuvar = headerList.indexOf(Headers.FUVAR.getCat());
             int vam = headerList.indexOf(Headers.VAM.getCat());
             int engedmeny = headerList.indexOf(Headers.ENGEDMENY.getCat());
@@ -242,6 +245,7 @@ public class SourceWorkbook {
             int fixktg = headerList.indexOf(Headers.FIXKTG.getCat());
             
             Cell cellKatar = row.getCell(katar);
+            Cell cellDeviza = row.getCell(deviza);
             Cell cellFuvar = row.getCell(fuvar);
             Cell cellVam = row.getCell(vam);
             Cell cellEngedmeny = row.getCell(engedmeny);
@@ -259,6 +263,8 @@ public class SourceWorkbook {
             String szelessegPlace = cellSzelesseg.getAddress().formatAsString();
             String fixktgPlace = cellFixktg.getAddress().formatAsString();
             
+            String devizaSzallito = cellDeviza.toString();
+            
             double katarValue = cellKatar.getNumericCellValue();
             double fuvarValue = cellFuvar.getNumericCellValue();
             double vamValue = cellVam.getNumericCellValue();
@@ -268,9 +274,17 @@ public class SourceWorkbook {
             double szelessegValue = cellSzelesseg.getNumericCellValue();
             double fixktgValue = cellFixktg.getNumericCellValue();
             
-            cellEur.setCellFormula(katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
-                    "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                    "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace);
+            if(devizaSzallito.equals("EUR")) {
+                cellEur.setCellFormula(katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace);
+            }
+            else if(devizaSzallito.equals("USD")) {
+                
+            }
+            else if(devizaSzallito.equals("Ft")) {
+                
+            }
         }
         sheet1.autoSizeColumn(lastCell + 1);
         return wb;
