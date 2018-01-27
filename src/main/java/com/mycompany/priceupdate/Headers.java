@@ -1,6 +1,7 @@
 package com.mycompany.priceupdate;
 
 public enum Headers {
+    CIKKSZAM ("Cikkszám"),
     EUR_LISTA ("Listaár (EUR)"),
     HU_LISTA ("Listaár (Ft)"),
     AGRAM_KONF_LISTA ("Agram konfek. lista ár (HRK)"),
@@ -19,7 +20,8 @@ public enum Headers {
     EGYEB ("K00004;0;Egyéb %"),
     HULLADEK ("K00005;0;Hulladék / selejt %"),
     SZELESSEG ("K00006;0;Szélesség %"),
-    FIXKTG ("K00007;1;Fix költség");
+    FIXKTG ("K00007;1;Fix költség"),
+    SZELESSEG2 ("Szélesség");
     
     private String cat;
 
