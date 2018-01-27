@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -207,6 +208,25 @@ public class SourceWorkbook {
     public Workbook modifySourceWoorkbook() throws IOException, InvalidFormatException {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
+        Sheet sheet2 = wb.getSheetAt(1);
+        Row row2 = sheet2.createRow(0);
+        
+        Cell cellEurRate = row2.createCell(0);
+        cellEurRate.setCellValue(315);
+        String eurRate = sheet2.getSheetName() + "!" + cellEurRate.getAddress().formatAsString();
+        
+        Cell cellEurRate2 = row2.createCell(3);
+        cellEurRate2.setCellValue(300);
+        String eurRate2 = sheet2.getSheetName() + "!" + cellEurRate2.getAddress().formatAsString();
+        
+        Cell cellUsdRate = row2.createCell(1);
+        cellUsdRate.setCellValue(260);
+        String usdRate = sheet2.getSheetName() + "!" + cellUsdRate.getAddress().formatAsString();
+        
+        Cell cellEurUsdRate = row2.createCell(2);
+        cellEurUsdRate.setCellValue(1.15);
+        String eurUsdRate = sheet2.getSheetName() + "!" + cellEurUsdRate.getAddress().formatAsString();
+        
         int lastRow = sheet1.getLastRowNum();
         int lastCell = headerList.indexOf(Headers.SZELESSEG2.getCat());
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
@@ -216,8 +236,16 @@ public class SourceWorkbook {
             	if(cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat())) {
                     Cell cellEur = row.createCell(lastCell + 1);
                     cellEur.setCellValue("Beszár EUR");
-                    Cell cellFt = row.createCell(lastCell + 2);
-                    cellFt.setCellValue("Beszár HUF");
+                    Cell cellHuf = row.createCell(lastCell + 2);
+                    cellHuf.setCellValue("Beszár HUF");
+                    Cell cellMarginEur = row.createCell(lastCell + 3);
+                    cellMarginEur.setCellValue("Árrés EUR");
+                    Cell cellMarginHuf = row.createCell(lastCell + 4);
+                    cellMarginHuf.setCellValue("Árrés HUF");
+                    Cell cellMarginAgram = row.createCell(lastCell + 5);
+                    cellMarginAgram.setCellValue("Árrés Agram");
+                    Cell cellMarginOkovi = row.createCell(lastCell + 6);
+                    cellMarginOkovi.setCellValue("Árrés Okovi");
                 }
                 continue;
             }
@@ -234,25 +262,23 @@ public class SourceWorkbook {
             }
             
             Cell cellEur = row.createCell(lastCell + 1);
-            int katar = headerList.indexOf("Szállítói utolsó szerződéses ár");
-            int deviza = headerList.indexOf("Szállítói utolsó szerződéses ár pénznem");
-            int fuvar = headerList.indexOf(Headers.FUVAR.getCat());
-            int vam = headerList.indexOf(Headers.VAM.getCat());
-            int engedmeny = headerList.indexOf(Headers.ENGEDMENY.getCat());
-            int egyeb = headerList.indexOf(Headers.EGYEB.getCat());
-            int hulladek = headerList.indexOf(Headers.HULLADEK.getCat());
-            int szelesseg = headerList.indexOf(Headers.SZELESSEG.getCat());
-            int fixktg = headerList.indexOf(Headers.FIXKTG.getCat());
+            Cell cellFt = row.createCell(lastCell + 2);
+            Cell cellAgramBeszar = row.getCell(headerList.indexOf(Headers.AGRAM_TR.getCat()));
+            Cell cellAgramListaar = row.getCell(headerList.indexOf(Headers.AGRAM_LISTA.getCat()));
+            Cell cellOkoviBeszar = row.getCell(headerList.indexOf(Headers.OKOVI_TR.getCat()));
+            Cell cellOkoviListaar = row.getCell(headerList.indexOf(Headers.OKOVI_LISTA.getCat()));
+            Cell cellEurLista = row.getCell(headerList.indexOf(Headers.EUR_LISTA.getCat()));
+            Cell cellHuLista = row.getCell(headerList.indexOf(Headers.HU_LISTA.getCat()));
             
-            Cell cellKatar = row.getCell(katar);
-            Cell cellDeviza = row.getCell(deviza);
-            Cell cellFuvar = row.getCell(fuvar);
-            Cell cellVam = row.getCell(vam);
-            Cell cellEngedmeny = row.getCell(engedmeny);
-            Cell cellEgyeb = row.getCell(egyeb);
-            Cell cellHulladek = row.getCell(hulladek);
-            Cell cellSzelesseg = row.getCell(szelesseg);
-            Cell cellFixktg = row.getCell(fixktg);
+            Cell cellKatar = row.getCell(headerList.indexOf("Szállítói utolsó szerződéses ár"));
+            Cell cellDeviza = row.getCell(headerList.indexOf("Szállítói utolsó szerződéses ár pénznem"));
+            Cell cellFuvar = row.getCell(headerList.indexOf(Headers.FUVAR.getCat()));
+            Cell cellVam = row.getCell(headerList.indexOf(Headers.VAM.getCat()));
+            Cell cellEngedmeny = row.getCell(headerList.indexOf(Headers.ENGEDMENY.getCat()));
+            Cell cellEgyeb = row.getCell(headerList.indexOf(Headers.EGYEB.getCat()));
+            Cell cellHulladek = row.getCell(headerList.indexOf(Headers.HULLADEK.getCat()));
+            Cell cellSzelesseg = row.getCell(headerList.indexOf(Headers.SZELESSEG.getCat()));
+            Cell cellFixktg = row.getCell(headerList.indexOf(Headers.FIXKTG.getCat()));
             
             String katarPlace = cellKatar.getAddress().formatAsString();
             String fuvarPlace = cellFuvar.getAddress().formatAsString();
@@ -275,18 +301,59 @@ public class SourceWorkbook {
             double fixktgValue = cellFixktg.getNumericCellValue();
             
             if(devizaSzallito.equals("EUR")) {
-                cellEur.setCellFormula(katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                cellEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace);
+                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ",4)");
+                cellFt.setCellFormula("ROUND((" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ")*" + eurRate + ",4)");
             }
             else if(devizaSzallito.equals("USD")) {
-                
+                cellEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1+" + szelessegPlace + "/100)/" + eurUsdRate + "+" + fixktgPlace + ",4)");
+                cellFt.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1+" + szelessegPlace + "/100)*" + usdRate + "+" + fixktgPlace + "*" + eurRate + ",4)");
             }
             else if(devizaSzallito.equals("Ft")) {
-                
+                cellEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1+" + szelessegPlace + "/100)/" + eurRate2 + "+" + fixktgPlace + ",4)");
+                cellFt.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + "/" + eurRate + ",4)");
+            }
+            
+            cellAgramBeszar.setCellFormula("ROUND(" + cellEur.getAddress().formatAsString() + "*1.15,4)");
+            cellOkoviBeszar.setCellFormula("ROUND(" + cellEur.getAddress().formatAsString() + "*1.1,4)");
+            
+            cellEur.setCellType(CellType.FORMULA);
+            cellFt.setCellType(CellType.FORMULA);
+            cellAgramBeszar.setCellType(CellType.FORMULA);
+            cellOkoviBeszar.setCellType(CellType.FORMULA);
+            cellAgramListaar.setCellType(CellType.FORMULA);
+            cellOkoviListaar.setCellType(CellType.FORMULA);
+            cellEurLista.setCellType(CellType.FORMULA);
+            cellHuLista.setCellType(CellType.FORMULA);
+            
+            CellStyle style = wb.createCellStyle();
+            style.setDataFormat(wb.createDataFormat().getFormat("###,###,##0.0000"));
+            cellEur.setCellStyle(style);
+            cellAgramBeszar.setCellStyle(style);
+            cellOkoviBeszar.setCellStyle(style);
+            
+            CellStyle style2 = wb.createCellStyle();
+            style2.setDataFormat(wb.createDataFormat().getFormat("###,###,##0.00"));
+            cellFt.setCellStyle(style2);
+        }
+        Row row = sheet1.getRow(4);
+        if(row != null) {
+            int lastCellNum = row.getLastCellNum();
+            for(int column = 0; column < lastCellNum; column++) {
+                sheet1.autoSizeColumn(column);
             }
         }
-        sheet1.autoSizeColumn(lastCell + 1);
         return wb;
     }
 }
