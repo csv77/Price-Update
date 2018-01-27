@@ -51,7 +51,7 @@ public class SourceWorkbook {
         while(notFound && i <= lastRow) {
             Row row = sheet.getRow(i);
             Cell cell = row.getCell(0);
-            if(cell != null && cell.getStringCellValue().equals("Cikkszám")) {
+            if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat())) {
                 notFound = false;
                 for(Cell cellInRow : row) {
                     headerList.add(cellInRow.getStringCellValue());
@@ -71,16 +71,16 @@ public class SourceWorkbook {
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
-            if(cell == null || cell.getStringCellValue().equals("Cikkszám") || cell.getStringCellValue().equals("")) {
+            if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
             	continue;
             }
             
             int lastColumn = row.getLastCellNum();
-            int columnForCurrency = lastColumn + 1;
+            int columnForCurrency = lastColumn + 20;
             List<Cell> listOfCellsOfPrices = new ArrayList<>();
             listOfCellsOfPrices.add(cell);
             
-            int columnForSchema = lastColumn + 30;
+            int columnForSchema = lastColumn + 40;
             List<Cell> listOfCellsOfSchema = new ArrayList<>();
             listOfCellsOfSchema.add(cell);
             
@@ -88,6 +88,9 @@ public class SourceWorkbook {
                 String category = header.getCat();
                 int index = headerList.indexOf(category);
                 if(index < lastColumn) {
+                    if(row.getCell(index) == null) {
+                        continue;
+                    }
                     if(row.getCell(index).getCellTypeEnum().equals(CellType.NUMERIC) && row.getCell(index).getNumericCellValue() == 0) {
                         continue;
                     }
@@ -205,12 +208,12 @@ public class SourceWorkbook {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
         int lastRow = sheet1.getLastRowNum();
-        int lastCell = headerList.indexOf("Szélesség");
+        int lastCell = headerList.indexOf(Headers.SZELESSEG2.getCat());
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
-            if(cell == null || cell.getStringCellValue().equals("Cikkszám") || cell.getStringCellValue().equals("")) {
-            	if(cell.getStringCellValue().equals("Cikkszám")) {
+            if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
+            	if(cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat())) {
                     Cell cellEur = row.createCell(lastCell + 1);
                     cellEur.setCellValue("Beszár EUR");
                 }
@@ -247,6 +250,15 @@ public class SourceWorkbook {
             Cell cellSzelesseg = row.getCell(szelesseg);
             Cell cellFixktg = row.getCell(fixktg);
             
+            String katarPlace = cellKatar.getAddress().formatAsString();
+            String fuvarPlace = cellFuvar.getAddress().formatAsString();
+            String vamPlace = cellVam.getAddress().formatAsString();
+            String engedmenyPlace = cellEngedmeny.getAddress().formatAsString();
+            String egyebPlace = cellEgyeb.getAddress().formatAsString();
+            String hulladekPlace = cellHulladek.getAddress().formatAsString();
+            String szelessegPlace = cellSzelesseg.getAddress().formatAsString();
+            String fixktgPlace = cellFixktg.getAddress().formatAsString();
+            
             double katarValue = cellKatar.getNumericCellValue();
             double fuvarValue = cellFuvar.getNumericCellValue();
             double vamValue = cellVam.getNumericCellValue();
@@ -256,9 +268,9 @@ public class SourceWorkbook {
             double szelessegValue = cellSzelesseg.getNumericCellValue();
             double fixktgValue = cellFixktg.getNumericCellValue();
             
-            cellEur.setCellValue(katarValue * (1 + fuvarValue / 100) * (1 + vamValue / 100) *
-                    (1 + engedmenyValue / 100) * (1 + egyebValue / 100) * (1 + hulladekValue / 100) *
-                    (1 + szelessegValue / 100) + fixktgValue);
+            cellEur.setCellFormula(katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                    "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                    "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace);
         }
         sheet1.autoSizeColumn(lastCell + 1);
         return wb;
