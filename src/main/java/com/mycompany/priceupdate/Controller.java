@@ -9,10 +9,14 @@ public class Controller {
     private SourceWorkbook srWb;
     private DestinationWorkbook dWb;
     private String outputFilename;
-
+    
    public Controller(String inputFilename, String outputFilename) throws IOException, InvalidFormatException {
         this.outputFilename = outputFilename;
         srWb = new SourceWorkbook(inputFilename);
+    }
+
+    public void setRates(Double[] rates) {
+        srWb.setRates(rates);
     }
     
     public void makeDestinationExcelFile() throws InvalidFormatException, IOException {
@@ -28,7 +32,7 @@ public class Controller {
     }
     
     public void modifiySourceExcelFile() throws IOException, InvalidFormatException {
-        Workbook wb = srWb.modifySourceWoorkbook();
+        Workbook wb = srWb.addFormulasToSourceWoorkbook();
         FileOutputStream fileOut = new FileOutputStream(srWb.getFilename());
         wb.write(fileOut);
         wb.close();

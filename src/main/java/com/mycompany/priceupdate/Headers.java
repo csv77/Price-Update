@@ -21,7 +21,13 @@ public enum Headers {
     HULLADEK ("K00005;0;Hulladék / selejt %"),
     SZELESSEG ("K00006;0;Szélesség %"),
     FIXKTG ("K00007;1;Fix költség"),
-    SZELESSEG2 ("Szélesség");
+    SZELESSEG2 ("Szélesség"),
+    BESZAREUR ("Beszár Eur"),
+    BESZARHUF ("Beszár HUF"),
+    ARRESEUR ("Árrés EUR"),
+    ARRESHUF ("Árrés HUF"),
+    ARRESAGRAM ("Árrés Agram"),
+    ARRESOKOVI ("Árrés Okovi");
     
     private String cat;
 

@@ -20,6 +20,7 @@ public class SourceWorkbook {
     private List<List<Cell>> listOfPrices = new ArrayList<>();
     private List<List<Cell>> listOfSchema = new ArrayList<>();
     private String filename;
+    private Double[] rates;
     
     public SourceWorkbook(String filename) throws IOException, InvalidFormatException {
         this.filename = filename;
@@ -40,6 +41,10 @@ public class SourceWorkbook {
 
     public List<String> getHeaderList() {
         return headerList;
+    }
+
+    public void setRates(Double[] rates) {
+        this.rates = rates;
     }
     
     public List<String> getHeader(String filename) throws IOException, InvalidFormatException {
@@ -81,7 +86,7 @@ public class SourceWorkbook {
             List<Cell> listOfCellsOfPrices = new ArrayList<>();
             listOfCellsOfPrices.add(cell);
             
-            int columnForSchema = lastColumn + 40;
+            int columnForSchema = lastColumn + 80;
             List<Cell> listOfCellsOfSchema = new ArrayList<>();
             listOfCellsOfSchema.add(cell);
             
@@ -205,26 +210,26 @@ public class SourceWorkbook {
         listOfCells.add(cellOfSchemaCode);
     }
     
-    public Workbook modifySourceWoorkbook() throws IOException, InvalidFormatException {
+    public Workbook addFormulasToSourceWoorkbook() throws IOException, InvalidFormatException {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
         Sheet sheet2 = wb.getSheetAt(1);
         Row row2 = sheet2.createRow(0);
         
         Cell cellEurRate = row2.createCell(0);
-        cellEurRate.setCellValue(315);
+        cellEurRate.setCellValue(rates[0]);
         String eurRate = sheet2.getSheetName() + "!" + cellEurRate.getAddress().formatAsString();
         
         Cell cellEurRate2 = row2.createCell(3);
-        cellEurRate2.setCellValue(300);
+        cellEurRate2.setCellValue(rates[1]);
         String eurRate2 = sheet2.getSheetName() + "!" + cellEurRate2.getAddress().formatAsString();
         
         Cell cellUsdRate = row2.createCell(1);
-        cellUsdRate.setCellValue(260);
+        cellUsdRate.setCellValue(rates[2]);
         String usdRate = sheet2.getSheetName() + "!" + cellUsdRate.getAddress().formatAsString();
         
         Cell cellEurUsdRate = row2.createCell(2);
-        cellEurUsdRate.setCellValue(1.15);
+        cellEurUsdRate.setCellValue(rates[3]);
         String eurUsdRate = sheet2.getSheetName() + "!" + cellEurUsdRate.getAddress().formatAsString();
         
         int lastRow = sheet1.getLastRowNum();
@@ -235,17 +240,23 @@ public class SourceWorkbook {
             if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
             	if(cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat())) {
                     Cell cellEur = row.createCell(lastCell + 1);
-                    cellEur.setCellValue("Beszár EUR");
+                    cellEur.setCellValue(Headers.BESZAREUR.getCat());
+                    headerList.add(cellEur.getStringCellValue());
                     Cell cellHuf = row.createCell(lastCell + 2);
-                    cellHuf.setCellValue("Beszár HUF");
+                    cellHuf.setCellValue(Headers.BESZARHUF.getCat());
+                    headerList.add(cellHuf.getStringCellValue());
                     Cell cellMarginEur = row.createCell(lastCell + 3);
-                    cellMarginEur.setCellValue("Árrés EUR");
+                    cellMarginEur.setCellValue(Headers.ARRESEUR.getCat());
+                    headerList.add(cellMarginEur.getStringCellValue());
                     Cell cellMarginHuf = row.createCell(lastCell + 4);
-                    cellMarginHuf.setCellValue("Árrés HUF");
+                    cellMarginHuf.setCellValue(Headers.ARRESHUF.getCat());
+                    headerList.add(cellMarginHuf.getStringCellValue());
                     Cell cellMarginAgram = row.createCell(lastCell + 5);
-                    cellMarginAgram.setCellValue("Árrés Agram");
+                    cellMarginAgram.setCellValue(Headers.ARRESAGRAM.getCat());
+                    headerList.add(cellMarginAgram.getStringCellValue());
                     Cell cellMarginOkovi = row.createCell(lastCell + 6);
-                    cellMarginOkovi.setCellValue("Árrés Okovi");
+                    cellMarginOkovi.setCellValue(Headers.ARRESOKOVI.getCat());
+                    headerList.add(cellMarginOkovi.getStringCellValue());
                 }
                 continue;
             }
@@ -261,8 +272,8 @@ public class SourceWorkbook {
                 }
             }
             
-            Cell cellEur = row.createCell(lastCell + 1);
-            Cell cellFt = row.createCell(lastCell + 2);
+            Cell cellBeszarEur = row.createCell(headerList.indexOf(Headers.BESZAREUR.getCat()));
+            Cell cellBeszarHuf = row.createCell(headerList.indexOf(Headers.BESZARHUF.getCat()));
             Cell cellAgramBeszar = row.getCell(headerList.indexOf(Headers.AGRAM_TR.getCat()));
             Cell cellAgramListaar = row.getCell(headerList.indexOf(Headers.AGRAM_LISTA.getCat()));
             Cell cellOkoviBeszar = row.getCell(headerList.indexOf(Headers.OKOVI_TR.getCat()));
@@ -280,6 +291,11 @@ public class SourceWorkbook {
             Cell cellSzelesseg = row.getCell(headerList.indexOf(Headers.SZELESSEG.getCat()));
             Cell cellFixktg = row.getCell(headerList.indexOf(Headers.FIXKTG.getCat()));
             
+            Cell cellArresEur = row.createCell(headerList.indexOf(Headers.ARRESEUR.getCat()));
+            Cell cellArresHuf = row.createCell(headerList.indexOf(Headers.ARRESHUF.getCat()));
+            Cell cellArresAgram = row.createCell(headerList.indexOf(Headers.ARRESAGRAM.getCat()));
+            Cell cellArresOkovi = row.createCell(headerList.indexOf(Headers.ARRESOKOVI.getCat()));
+            
             String katarPlace = cellKatar.getAddress().formatAsString();
             String fuvarPlace = cellFuvar.getAddress().formatAsString();
             String vamPlace = cellVam.getAddress().formatAsString();
@@ -291,45 +307,44 @@ public class SourceWorkbook {
             
             String devizaSzallito = cellDeviza.toString();
             
-            double katarValue = cellKatar.getNumericCellValue();
-            double fuvarValue = cellFuvar.getNumericCellValue();
-            double vamValue = cellVam.getNumericCellValue();
-            double engedmenyValue = cellEngedmeny.getNumericCellValue();
-            double egyebValue = cellEgyeb.getNumericCellValue();
-            double hulladekValue = cellHulladek.getNumericCellValue();
-            double szelessegValue = cellSzelesseg.getNumericCellValue();
-            double fixktgValue = cellFixktg.getNumericCellValue();
-            
             if(devizaSzallito.equals("EUR")) {
-                cellEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ",4)");
-                cellFt.setCellFormula("ROUND((" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                cellBeszarHuf.setCellFormula("ROUND((" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ")*" + eurRate + ",4)");
             }
             else if(devizaSzallito.equals("USD")) {
-                cellEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)/" + eurUsdRate + "+" + fixktgPlace + ",4)");
-                cellFt.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)*" + usdRate + "+" + fixktgPlace + "*" + eurRate + ",4)");
             }
             else if(devizaSzallito.equals("Ft")) {
-                cellEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)/" + eurRate2 + "+" + fixktgPlace + ",4)");
-                cellFt.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + "/" + eurRate + ",4)");
             }
             
-            cellAgramBeszar.setCellFormula("ROUND(" + cellEur.getAddress().formatAsString() + "*1.15,4)");
-            cellOkoviBeszar.setCellFormula("ROUND(" + cellEur.getAddress().formatAsString() + "*1.1,4)");
+            cellAgramBeszar.setCellFormula("ROUND(" + cellBeszarEur.getAddress().formatAsString() + "*1.15,4)");
+            cellOkoviBeszar.setCellFormula("ROUND(" + cellBeszarEur.getAddress().formatAsString() + "*1.1,4)");
+            cellAgramListaar.setCellFormula("ROUND(" + cellAgramBeszar.getAddress().formatAsString() + "/1.15*1.1*" +
+                    rates[4] + "*1.03*" + cellArresAgram.getAddress().formatAsString() + ",2)");
+            cellOkoviListaar.setCellFormula("ROUND("+ cellOkoviBeszar.getAddress().formatAsString() + "*" + rates[5] + "*" +
+                    cellArresOkovi.getAddress().formatAsString() + ",2)");
+            cellEurLista.setCellFormula("ROUND(" + cellBeszarEur.getAddress().formatAsString() + "*" +
+                    cellArresEur.getAddress().formatAsString() + "/0.96/0.915,4)");
+            cellHuLista.setCellFormula("ROUND(" + cellBeszarHuf.getAddress().formatAsString() + "*" +
+                        cellArresHuf.getAddress().formatAsString() + ",2)");
             
-            cellEur.setCellType(CellType.FORMULA);
-            cellFt.setCellType(CellType.FORMULA);
+            cellBeszarEur.setCellType(CellType.FORMULA);
+            cellBeszarHuf.setCellType(CellType.FORMULA);
             cellAgramBeszar.setCellType(CellType.FORMULA);
             cellOkoviBeszar.setCellType(CellType.FORMULA);
             cellAgramListaar.setCellType(CellType.FORMULA);
@@ -337,15 +352,23 @@ public class SourceWorkbook {
             cellEurLista.setCellType(CellType.FORMULA);
             cellHuLista.setCellType(CellType.FORMULA);
             
-            CellStyle style = wb.createCellStyle();
-            style.setDataFormat(wb.createDataFormat().getFormat("###,###,##0.0000"));
-            cellEur.setCellStyle(style);
-            cellAgramBeszar.setCellStyle(style);
-            cellOkoviBeszar.setCellStyle(style);
+            CellStyle style1 = wb.createCellStyle();
+            style1.setDataFormat(wb.createDataFormat().getFormat("###,###,##0.0000"));
+            cellBeszarEur.setCellStyle(style1);
+            cellAgramBeszar.setCellStyle(style1);
+            cellOkoviBeszar.setCellStyle(style1);
+            cellEurLista.setCellStyle(style1);
             
             CellStyle style2 = wb.createCellStyle();
             style2.setDataFormat(wb.createDataFormat().getFormat("###,###,##0.00"));
-            cellFt.setCellStyle(style2);
+            cellBeszarHuf.setCellStyle(style2);
+            cellAgramListaar.setCellStyle(style2);
+            cellOkoviListaar.setCellStyle(style2);
+            cellHuLista.setCellStyle(style2);
+            cellArresAgram.setCellStyle(style2);
+            cellArresEur.setCellStyle(style2);
+            cellArresHuf.setCellStyle(style2);
+            cellArresOkovi.setCellStyle(style2);
         }
         Row row = sheet1.getRow(4);
         if(row != null) {
