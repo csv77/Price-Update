@@ -60,7 +60,7 @@ public class PriceUpdateGui extends Application {
                     tfRates[i].setText("300");
                     break;
                 case 2:
-                    tfRates[i].setText("265");
+                    tfRates[i].setText("285");
                     break;
                 case 3:
                     tfRates[i].setText("1.15");
