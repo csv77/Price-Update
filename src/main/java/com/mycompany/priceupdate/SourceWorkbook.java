@@ -210,11 +210,6 @@ public class SourceWorkbook {
         listOfCells.add(cellOfSchemaCode);
     }
     
-    /**
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException
-     */
     public Workbook addFormulasToSourceWoorkbook() throws IOException, InvalidFormatException {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
