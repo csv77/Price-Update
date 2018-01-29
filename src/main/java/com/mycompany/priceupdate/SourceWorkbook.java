@@ -210,6 +210,11 @@ public class SourceWorkbook {
         listOfCells.add(cellOfSchemaCode);
     }
     
+    /**
+     * @return
+     * @throws IOException
+     * @throws InvalidFormatException
+     */
     public Workbook addFormulasToSourceWoorkbook() throws IOException, InvalidFormatException {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
@@ -233,7 +238,7 @@ public class SourceWorkbook {
         String eurUsdRate = sheet2.getSheetName() + "!" + cellEurUsdRate.getAddress().formatAsString();
         
         int lastRow = sheet1.getLastRowNum();
-        int lastCell = headerList.indexOf(Headers.SZELESSEG2.getCat());
+        int lastCell = headerList.size() - 1;
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
