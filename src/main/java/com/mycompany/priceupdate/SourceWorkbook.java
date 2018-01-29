@@ -312,26 +312,26 @@ public class SourceWorkbook {
             if(devizaSzallito.equals("EUR")) {
                 cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ",4)");
-                cellBeszarHuf.setCellFormula("ROUND((" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + "/" + eurRate2 + ",4)");
+                cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ")*" + eurRate + ",4)");
+                        "/100)*(1+" + szelessegPlace + "/100)*" + eurRate + "+" + fixktgPlace + ",2)");
             }
             else if(devizaSzallito.equals("USD")) {
                 cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                        "/100)*(1+" + szelessegPlace + "/100)/" + eurUsdRate + "+" + fixktgPlace + ",4)");
+                        "/100)*(1+" + szelessegPlace + "/100)/" + eurUsdRate + "+" + fixktgPlace + "/" + eurRate2 + ",4)");
                 cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                        "/100)*(1+" + szelessegPlace + "/100)*" + usdRate + "+" + fixktgPlace + "*" + eurRate + ",4)");
+                        "/100)*(1+" + szelessegPlace + "/100)*" + usdRate + "+" + fixktgPlace + ",2)");
             }
             else if(devizaSzallito.equals("Ft")) {
                 cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                        "/100)*(1+" + szelessegPlace + "/100)/" + eurRate2 + "+" + fixktgPlace + ",4)");
+                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + "/" + eurRate2 + ",4)");
                 cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + "/" + eurRate + ",4)");
+                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ",2)");
             }
             
             cellAgramBeszar.setCellFormula("ROUND(" + cellBeszarEur.getAddress().formatAsString() + "*1.15,4)");
