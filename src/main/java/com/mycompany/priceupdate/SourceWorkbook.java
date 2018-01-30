@@ -90,9 +90,8 @@ public class SourceWorkbook {
             List<Cell> listOfCellsOfSchema = new ArrayList<>();
             listOfCellsOfSchema.add(cell);
             
-            for(Headers header : Headers.values()) {
-                String category = header.getCat();
-                int index = headerList.indexOf(category);
+            for(String header : headerList) {
+                int index = headerList.indexOf(header);
                 if(index < lastColumn) {
                     if(row.getCell(index) == null) {
                         continue;
@@ -104,7 +103,7 @@ public class SourceWorkbook {
                         continue;
                     }
                     
-                    switch(category) {
+                    switch(header) {
                         case "Listaár (EUR)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.EUR_LISTA);
                             columnForCurrency += 2;
@@ -262,12 +261,20 @@ public class SourceWorkbook {
             }
             
             if(cell.getStringCellValue().charAt(0) == '3') {
-                Cell cellOfWidth = row.getCell(headerList.indexOf(Headers.SZELESSEG2.getCat()));
-                if(cellOfWidth != null || !cellOfWidth.toString().equals("")) {
-                    double width = Double.parseDouble(cellOfWidth.getStringCellValue());
-                    if(width != 0) {
-                        Cell cellOfSchemaWidth = row.getCell(headerList.indexOf(Headers.SZELESSEG.getCat()));
-                        cellOfSchemaWidth.setCellValue(width / 10 - 100);
+                if(row.getCell(headerList.indexOf(Headers.SZELESSEG2.getCat())) != null) {
+                    Cell cellOfWidth = row.getCell(headerList.indexOf(Headers.SZELESSEG2.getCat()));
+                    if(!cellOfWidth.toString().equals("")) {
+                        double width = 0;
+                        if(cellOfWidth.getCellTypeEnum().equals(CellType.STRING)) {
+                            width = Double.parseDouble(cellOfWidth.getStringCellValue());
+                        }
+                        else {
+                            width = cellOfWidth.getNumericCellValue();
+                        }
+                        if(width != 0) {
+                            Cell cellOfSchemaWidth = row.getCell(headerList.indexOf(Headers.SZELESSEG.getCat()));
+                            cellOfSchemaWidth.setCellValue(width / 10 - 100);
+                        }
                     }
                 }
             }
