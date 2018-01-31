@@ -92,11 +92,11 @@ public class SourceWorkbook {
             }
             
             int lastColumn = row.getLastCellNum();
-            int columnForCurrency = lastColumn + 20;
+            int columnForCurrency = lastColumn + 100;
             List<Cell> listOfCellsOfPrices = new ArrayList<>();
             listOfCellsOfPrices.add(cell);
             
-            int columnForSchema = lastColumn + 80;
+            int columnForSchema = lastColumn + 200;
             List<Cell> listOfCellsOfSchema = new ArrayList<>();
             listOfCellsOfSchema.add(cell);
             
