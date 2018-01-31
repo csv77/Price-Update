@@ -74,11 +74,21 @@ public class SourceWorkbook {
         listOfPrices.clear();
         listOfSchema.clear();
         int lastRow = sheet1.getLastRowNum();
+        int lastCell = headerList.size() - 1;
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
             if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
-            	continue;
+            	if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(Headers.BESZAREUR.getCat())) {
+                    int i = 1;
+                    for(AddedHeaders addedHeaders : AddedHeaders.values()) {
+                        Cell addedCell = row.createCell(lastCell + i);
+                        addedCell.setCellValue(addedHeaders.getCat());
+                        headerList.add(addedCell.getStringCellValue());
+                        i++;
+                    }
+                }
+                continue;
             }
             
             int lastColumn = row.getLastCellNum();
@@ -104,51 +114,51 @@ public class SourceWorkbook {
                     }
                     
                     switch(header) {
-                        case "Listaár (EUR)":
+                        case "Új listaár (EUR)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.EUR_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case "Listaár (Ft)":
+                        case "Új listaár (Ft)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.HU_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case "Agram konfek. lista ár (HRK)":
+                        case "Új Agram konfek. lista ár (HRK)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.AGRAM_KONF_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case "Agram konfek. transf. ár (EUR)":
+                        case "Új Agram konfek. transf. ár (EUR)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.AGRAM_KONF_TR);
                             columnForCurrency += 2;
                             break;
-                        case "Agram lista ár (HRK)":
+                        case "Új Agram lista ár (HRK)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.AGRAM_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case "Agram transfer ár (EUR)":
+                        case "Új Agram transfer ár (EUR)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.AGRAM_TR);
                             columnForCurrency += 2;
                             break;
-                        case "Okovi konfek. lista ár (SRD)":
+                        case "Új Okovi konfek. lista ár (SRD)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.OKOVI_KONF_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case "Okovi konfek. transf. ár (EUR)":
+                        case "Új Okovi konfek. transf. ár (EUR)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.OKOVI_KONF_TR);
                             columnForCurrency += 2;
                             break;
-                        case "Okovi lista ár (SRD)":
+                        case "Új Okovi lista ár (SRD)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.OKOVI_LISTA);
                             columnForCurrency += 2;
                             break;
-                        case "Okovi transfer ár (EUR)":
+                        case "Új Okovi transfer ár (EUR)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.OKOVI_TR);
                             columnForCurrency += 2;
                             break;
-                        case "Konfekcionált ár (EUR)":
+                        case "Új konfekcionált ár (EUR)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.EUR_KONF);
                             columnForCurrency += 2;
                             break;
-                        case "Konfekcionált ár (Ft)":
+                        case "Új konfekcionált ár (Ft)":
                             setCellsOfCurrencyAndPriceCode(listOfCellsOfPrices, row, columnForCurrency, index, PriceCat.HU_KONF);
                             columnForCurrency += 2;
                             break;
@@ -237,25 +247,14 @@ public class SourceWorkbook {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
             if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
-            	if(cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat())) {
-                    Cell cellEur = row.createCell(lastCell + 1);
-                    cellEur.setCellValue(Headers.BESZAREUR.getCat());
-                    headerList.add(cellEur.getStringCellValue());
-                    Cell cellHuf = row.createCell(lastCell + 2);
-                    cellHuf.setCellValue(Headers.BESZARHUF.getCat());
-                    headerList.add(cellHuf.getStringCellValue());
-                    Cell cellMarginEur = row.createCell(lastCell + 3);
-                    cellMarginEur.setCellValue(Headers.ARRESEUR.getCat());
-                    headerList.add(cellMarginEur.getStringCellValue());
-                    Cell cellMarginHuf = row.createCell(lastCell + 4);
-                    cellMarginHuf.setCellValue(Headers.ARRESHUF.getCat());
-                    headerList.add(cellMarginHuf.getStringCellValue());
-                    Cell cellMarginAgram = row.createCell(lastCell + 5);
-                    cellMarginAgram.setCellValue(Headers.ARRESAGRAM.getCat());
-                    headerList.add(cellMarginAgram.getStringCellValue());
-                    Cell cellMarginOkovi = row.createCell(lastCell + 6);
-                    cellMarginOkovi.setCellValue(Headers.ARRESOKOVI.getCat());
-                    headerList.add(cellMarginOkovi.getStringCellValue());
+            	if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(Headers.BESZAREUR.getCat())) {
+                    int i = 1;
+                    for(AddedHeaders addedHeaders : AddedHeaders.values()) {
+                        Cell addedCell = row.createCell(lastCell + i);
+                        addedCell.setCellValue(addedHeaders.getCat());
+                        headerList.add(addedCell.getStringCellValue());
+                        i++;
+                    }
                 }
                 continue;
             }
@@ -279,14 +278,14 @@ public class SourceWorkbook {
                 }
             }
             
-            Cell cellBeszarEur = row.createCell(headerList.indexOf(Headers.BESZAREUR.getCat()));
-            Cell cellBeszarHuf = row.createCell(headerList.indexOf(Headers.BESZARHUF.getCat()));
-            Cell cellAgramBeszar = row.getCell(headerList.indexOf(Headers.AGRAM_TR.getCat()));
-            Cell cellAgramListaar = row.getCell(headerList.indexOf(Headers.AGRAM_LISTA.getCat()));
-            Cell cellOkoviBeszar = row.getCell(headerList.indexOf(Headers.OKOVI_TR.getCat()));
-            Cell cellOkoviListaar = row.getCell(headerList.indexOf(Headers.OKOVI_LISTA.getCat()));
-            Cell cellEurLista = row.getCell(headerList.indexOf(Headers.EUR_LISTA.getCat()));
-            Cell cellHuLista = row.getCell(headerList.indexOf(Headers.HU_LISTA.getCat()));
+            Cell cellBeszarEur = row.createCell(headerList.indexOf(AddedHeaders.BESZAREUR.getCat()));
+            Cell cellBeszarHuf = row.createCell(headerList.indexOf(AddedHeaders.BESZARHUF.getCat()));
+            Cell cellAgramBeszar = row.createCell(headerList.indexOf(AddedHeaders.AGRAM_TR.getCat()));
+            Cell cellAgramListaar = row.createCell(headerList.indexOf(AddedHeaders.AGRAM_LISTA.getCat()));
+            Cell cellOkoviBeszar = row.createCell(headerList.indexOf(AddedHeaders.OKOVI_TR.getCat()));
+            Cell cellOkoviListaar = row.createCell(headerList.indexOf(AddedHeaders.OKOVI_LISTA.getCat()));
+            Cell cellEurLista = row.createCell(headerList.indexOf(AddedHeaders.EUR_LISTA.getCat()));
+            Cell cellHuLista = row.createCell(headerList.indexOf(AddedHeaders.HU_LISTA.getCat()));
             
             Cell cellKatar = row.getCell(headerList.indexOf("Szállítói utolsó szerződéses ár"));
             Cell cellKatarEng = row.getCell(headerList.indexOf("Rabat"));
@@ -299,10 +298,10 @@ public class SourceWorkbook {
             Cell cellSzelesseg = row.getCell(headerList.indexOf(Headers.SZELESSEG.getCat()));
             Cell cellFixktg = row.getCell(headerList.indexOf(Headers.FIXKTG.getCat()));
             
-            Cell cellArresEur = row.createCell(headerList.indexOf(Headers.ARRESEUR.getCat()));
-            Cell cellArresHuf = row.createCell(headerList.indexOf(Headers.ARRESHUF.getCat()));
-            Cell cellArresAgram = row.createCell(headerList.indexOf(Headers.ARRESAGRAM.getCat()));
-            Cell cellArresOkovi = row.createCell(headerList.indexOf(Headers.ARRESOKOVI.getCat()));
+            Cell cellArresEur = row.createCell(headerList.indexOf(AddedHeaders.ARRESEUR.getCat()));
+            Cell cellArresHuf = row.createCell(headerList.indexOf(AddedHeaders.ARRESHUF.getCat()));
+            Cell cellArresAgram = row.createCell(headerList.indexOf(AddedHeaders.ARRESAGRAM.getCat()));
+            Cell cellArresOkovi = row.createCell(headerList.indexOf(AddedHeaders.ARRESOKOVI.getCat()));
             
             String katarPlace = cellKatar.getAddress().formatAsString();
             String katarEngPlace = cellKatarEng.getAddress().formatAsString();
