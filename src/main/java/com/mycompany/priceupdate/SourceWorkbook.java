@@ -79,7 +79,7 @@ public class SourceWorkbook {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
             if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
-            	if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(Headers.BESZAREUR.getCat())) {
+            	if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(AddedHeaders.BESZAREUR.getCat())) {
                     int i = 1;
                     for(AddedHeaders addedHeaders : AddedHeaders.values()) {
                         Cell addedCell = row.createCell(lastCell + i);
@@ -247,7 +247,7 @@ public class SourceWorkbook {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
             if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
-            	if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(Headers.BESZAREUR.getCat())) {
+            	if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(AddedHeaders.BESZAREUR.getCat())) {
                     int i = 1;
                     for(AddedHeaders addedHeaders : AddedHeaders.values()) {
                         Cell addedCell = row.createCell(lastCell + i);
