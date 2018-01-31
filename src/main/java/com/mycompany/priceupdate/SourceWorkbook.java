@@ -287,9 +287,9 @@ public class SourceWorkbook {
             Cell cellEurLista = row.createCell(headerList.indexOf(AddedHeaders.EUR_LISTA.getCat()));
             Cell cellHuLista = row.createCell(headerList.indexOf(AddedHeaders.HU_LISTA.getCat()));
             
-            Cell cellKatar = row.getCell(headerList.indexOf("Szállítói utolsó szerződéses ár"));
-            Cell cellKatarEng = row.getCell(headerList.indexOf("Rabat"));
-            Cell cellDeviza = row.getCell(headerList.indexOf("Szállítói utolsó szerződéses ár pénznem"));
+            Cell cellKatar = row.getCell(headerList.indexOf(Headers.KAT_AR.getCat()));
+            Cell cellKatarEng = row.getCell(headerList.indexOf(Headers.RABAT.getCat()));
+            Cell cellDeviza = row.getCell(headerList.indexOf(Headers.DEVIZA.getCat()));
             Cell cellFuvar = row.getCell(headerList.indexOf(Headers.FUVAR.getCat()));
             Cell cellVam = row.getCell(headerList.indexOf(Headers.VAM.getCat()));
             Cell cellEngedmeny = row.getCell(headerList.indexOf(Headers.ENGEDMENY.getCat()));
