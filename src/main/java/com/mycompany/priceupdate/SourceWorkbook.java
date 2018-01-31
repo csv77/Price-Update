@@ -47,7 +47,7 @@ public class SourceWorkbook {
         this.rates = rates;
     }
     
-    public List<String> getHeader(String filename) throws IOException, InvalidFormatException {
+    private List<String> getHeader(String filename) throws IOException, InvalidFormatException {
         List<String> headerList = new ArrayList<>();
         Workbook wb = WorkbookFactory.create(new FileInputStream(filename));
         Sheet sheet = wb.getSheetAt(0);
