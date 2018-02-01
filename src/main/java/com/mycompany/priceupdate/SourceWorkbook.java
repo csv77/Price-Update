@@ -57,7 +57,7 @@ public class SourceWorkbook {
         while(notFound && i <= lastRow) {
             Row row = sheet.getRow(i);
             Cell cell = row.getCell(0);
-            if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat())) {
+            if(cell != null && cell.toString().equals(Headers.CIKKSZAM.getCat())) {
                 notFound = false;
                 for(Cell cellInRow : row) {
                     headerList.add(cellInRow.getStringCellValue());
@@ -78,8 +78,8 @@ public class SourceWorkbook {
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
-            if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
-            	if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(AddedHeaders.BESZAREUR.getCat())) {
+            if(cell == null || cell.toString().equals(Headers.CIKKSZAM.getCat()) || cell.toString().equals("")) {
+            	if(cell != null && cell.toString().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(AddedHeaders.BESZAREUR.getCat())) {
                     int i = 1;
                     for(AddedHeaders addedHeaders : AddedHeaders.values()) {
                         Cell addedCell = row.createCell(lastCell + i);
@@ -222,7 +222,7 @@ public class SourceWorkbook {
     public Workbook addFormulasToSourceWoorkbook() throws IOException, InvalidFormatException {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
-        Sheet sheet2 = wb.getSheetAt(1);
+        Sheet sheet2 = wb.createSheet("CurrencyRates");
         Row row2 = sheet2.createRow(0);
         
         Cell cellEurRate = row2.createCell(0);
@@ -241,35 +241,36 @@ public class SourceWorkbook {
         cellEurUsdRate.setCellValue(rates[3]);
         String eurUsdRate = sheet2.getSheetName() + "!" + cellEurUsdRate.getAddress().formatAsString();
         
+        int firstRowNum = 0;
         int lastRow = sheet1.getLastRowNum();
         int lastCell = headerList.size() - 1;
         for(int rowNum = 0; rowNum <= lastRow; rowNum++) {
             Row row = sheet1.getRow(rowNum);
             Cell cell = row.getCell(0);
-            if(cell == null || cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) || cell.getStringCellValue().equals("")) {
-            	if(cell != null && cell.getStringCellValue().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(AddedHeaders.BESZAREUR.getCat())) {
-                    int i = 1;
-                    for(AddedHeaders addedHeaders : AddedHeaders.values()) {
-                        Cell addedCell = row.createCell(lastCell + i);
-                        addedCell.setCellValue(addedHeaders.getCat());
-                        headerList.add(addedCell.getStringCellValue());
-                        i++;
+            if(cell == null || cell.toString().equals(Headers.CIKKSZAM.getCat()) || cell.toString().equals("")) {
+            	if(cell != null && cell.toString().equals(Headers.CIKKSZAM.getCat()) && !headerList.contains(AddedHeaders.BESZAREUR.getCat())) {
+                    if(!headerList.contains(AddedHeaders.BESZAREUR.getCat())) {
+                        int i = 1;
+                        for(AddedHeaders addedHeaders : AddedHeaders.values()) {
+                            Cell addedCell = row.createCell(lastCell + i);
+                            addedCell.setCellValue(addedHeaders.getCat());
+                            headerList.add(addedCell.getStringCellValue());
+                            i++;
+                        }
+                    }
+                    if(cell.toString().equals(Headers.CIKKSZAM.getCat())) {
+                        firstRowNum = rowNum;
                     }
                 }
                 continue;
             }
             
-            if(cell.getStringCellValue().charAt(0) == '3') {
+            if(cell.toString().charAt(0) == '3') {
                 if(row.getCell(headerList.indexOf(Headers.SZELESSEG2.getCat())) != null) {
                     Cell cellOfWidth = row.getCell(headerList.indexOf(Headers.SZELESSEG2.getCat()));
                     if(!cellOfWidth.toString().equals("")) {
                         double width = 0;
-                        if(cellOfWidth.getCellTypeEnum().equals(CellType.STRING)) {
-                            width = Double.parseDouble(cellOfWidth.getStringCellValue());
-                        }
-                        else {
-                            width = cellOfWidth.getNumericCellValue();
-                        }
+                        width = Double.parseDouble(cellOfWidth.toString());
                         if(width != 0) {
                             Cell cellOfSchemaWidth = row.getCell(headerList.indexOf(Headers.SZELESSEG.getCat()));
                             cellOfSchemaWidth.setCellValue(width / 10 - 100);
@@ -381,8 +382,8 @@ public class SourceWorkbook {
             cellArresOkovi.setCellStyle(style2);
         }
 
-        sheet1.createFreezePane(1, 5);
-        Row row = sheet1.getRow(4);
+        sheet1.createFreezePane(1, firstRowNum + 1);
+        Row row = sheet1.getRow(firstRowNum);
         if(row != null) {
             int lastCellNum = row.getLastCellNum();
             for(int column = 0; column < lastCellNum; column++) {
