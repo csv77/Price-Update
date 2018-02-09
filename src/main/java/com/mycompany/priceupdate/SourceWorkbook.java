@@ -171,7 +171,10 @@ public class SourceWorkbook {
                             columnForSchema += 2;
                             break;
                         case "K00003;0;Engedmény %":
-                            setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.ENGEDMENY);
+                            Cell cellOfDiscount = row.getCell(index);
+                            double oldValue = cellOfDiscount.getNumericCellValue();
+                            cellOfDiscount.setCellValue(100 - oldValue);
+                        	setCellsOfSchemaAndSchemaCode(listOfCellsOfSchema, row, columnForSchema, index, SchemaCat.ENGEDMENY);
                             columnForSchema += 2;
                             break;
                         case "K00004;0;Egyéb %":
@@ -318,26 +321,26 @@ public class SourceWorkbook {
             
             if(devizaSzallito.equals("EUR")) {
                 cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
-                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + "/" + eurRate2 + ",4)");
                 cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
-                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)*" + eurRate + "+" + fixktgPlace + ",2)");
             }
             else if(devizaSzallito.equals("USD")) {
                 cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
-                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)/" + eurUsdRate + "+" + fixktgPlace + "/" + eurRate2 + ",4)");
                 cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
-                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)*" + usdRate + "+" + fixktgPlace + ",2)");
             }
             else if(devizaSzallito.equals("Ft")) {
                 cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
-                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + "/" + eurRate2 + ",4)");
                 cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
-                        "/100)*(1+" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
+                        "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ",2)");
             }
             
