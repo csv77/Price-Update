@@ -225,7 +225,13 @@ public class SourceWorkbook {
     public Workbook addFormulasToSourceWoorkbook() throws IOException, InvalidFormatException {
         wb = WorkbookFactory.create(new FileInputStream(filename));
         sheet1 = wb.getSheetAt(0);
-        Sheet sheet2 = wb.createSheet("CurrencyRates");
+        Sheet sheet2;
+        if(wb.getSheet("CurrencyRates") == null) {
+        	sheet2 = wb.createSheet("CurrencyRates");
+        }
+        else {
+        	sheet2 = wb.getSheet("CurrencyRates");
+        }
         Row row2 = sheet2.createRow(0);
         
         Cell cellEurRate = row2.createCell(0);
