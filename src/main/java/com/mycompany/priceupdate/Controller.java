@@ -10,7 +10,7 @@ public class Controller {
     private DestinationWorkbook dWb;
     private String outputFilename;
     
-   public Controller(String inputFilename, String outputFilename) throws IOException, InvalidFormatException {
+    public Controller(String inputFilename, String outputFilename) throws IOException, InvalidFormatException {
         this.outputFilename = outputFilename;
         srWb = new SourceWorkbook(inputFilename);
     }
