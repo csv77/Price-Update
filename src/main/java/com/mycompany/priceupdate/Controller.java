@@ -32,7 +32,7 @@ public class Controller {
     }
     
     public void modifiySourceExcelFile() throws IOException, InvalidFormatException {
-        Workbook wb = srWb.addFormulasToSourceWoorkbook();
+    	Workbook wb = srWb.addFormulasToSourceWoorkbook();
         FileOutputStream fileOut = new FileOutputStream(srWb.getFilename());
         wb.write(fileOut);
         wb.close();
