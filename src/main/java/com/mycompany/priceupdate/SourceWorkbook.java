@@ -342,9 +342,9 @@ public class SourceWorkbook {
                         "/100)*(1+" + szelessegPlace + "/100)*" + usdRate + "+" + fixktgPlace + ",2)");
             }
             else if(devizaSzallito.equals("Ft")) {
-                cellBeszarEur.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
+                cellBeszarEur.setCellFormula("ROUND((" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
-                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + "/" + eurRate2 + ",4)");
+                        "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ")/" + eurRate2 + ",4)");
                 cellBeszarHuf.setCellFormula("ROUND(" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ",2)");
