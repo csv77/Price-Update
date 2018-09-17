@@ -106,7 +106,8 @@ public class SourceWorkbook {
                     if(row.getCell(index) == null) {
                         continue;
                     }
-                    if(row.getCell(index).getCellTypeEnum().equals(CellType.NUMERIC) && row.getCell(index).getNumericCellValue() == 0) {
+                    if((row.getCell(index).getCellTypeEnum().equals(CellType.NUMERIC) || row.getCell(index).getCellTypeEnum().equals(CellType.FORMULA))
+                    		&& row.getCell(index).getNumericCellValue() == 0) {
                         continue;
                     }
                     if(row.getCell(index).toString().equals("")) {
@@ -203,7 +204,7 @@ public class SourceWorkbook {
     }
     
     private static void setCellsOfCurrencyAndPriceCode(List<Cell> listOfCells, Row row, int lastColumn, int index, PriceCat priceCat){
-        listOfCells.add(row.getCell(index));
+    	listOfCells.add(row.getCell(index));
         Cell cellOfCurrency = row.createCell(lastColumn);
         cellOfCurrency.setCellValue(priceCat.getCurrency());
         listOfCells.add(cellOfCurrency);
@@ -351,11 +352,11 @@ public class SourceWorkbook {
             }
             
             cellAgramBeszar.setCellFormula("ROUND(" + cellBeszarEur.getAddress().formatAsString() + "*1.15,4)");
-            cellOkoviBeszar.setCellFormula("ROUND(" + cellBeszarEur.getAddress().formatAsString() + "*1.1,4)");
+            cellOkoviBeszar.setCellFormula("ROUND(" + cellBeszarEur.getAddress().formatAsString() + "*1.15,4)");
             cellAgramListaar.setCellFormula("ROUND(" + cellAgramBeszar.getAddress().formatAsString() + "/1.15*1.1*" +
                     rates[4] + "*1.03*" + cellArresAgram.getAddress().formatAsString() + ",2)");
-            cellOkoviListaar.setCellFormula("ROUND("+ cellOkoviBeszar.getAddress().formatAsString() + "*" + rates[5] + "*" +
-                    cellArresOkovi.getAddress().formatAsString() + ",2)");
+            cellOkoviListaar.setCellFormula("ROUND("+ cellOkoviBeszar.getAddress().formatAsString() + "/1.15*1.1*" +
+                    rates[5] + "*" + cellArresOkovi.getAddress().formatAsString() + ",2)");
             cellEurLista.setCellFormula("ROUND(" + cellBeszarEur.getAddress().formatAsString() + "*" +
                     cellArresEur.getAddress().formatAsString() + "/0.96/0.915,4)");
             cellHuLista.setCellFormula("IF("+ cellBeszarHuf.getAddress().formatAsString() + "*" +

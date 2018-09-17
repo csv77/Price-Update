@@ -34,7 +34,8 @@ public class DestinationWorkbook {
         return wb;
     }
 
-    private void loadData(List<List<Cell>> newListOfData, DataReorder dataReorder,
+    @SuppressWarnings("incomplete-switch")
+	private void loadData(List<List<Cell>> newListOfData, DataReorder dataReorder,
             Sheet sheet) {
         newListOfData = dataReorder.reorderData();
         
