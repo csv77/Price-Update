@@ -342,7 +342,7 @@ public class SourceWorkbook {
                         "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)*" + usdRate + "+" + fixktgPlace + ",2)");
             }
-            else if(devizaSzallito.equals("FT") || devizaSzallito.equals("HUF")) {
+            else if(devizaSzallito.equals("FT") || devizaSzallito.equals("HUF") || devizaSzallito.equals("Ft")) {
                 cellBeszarEur.setCellFormula("ROUND((" + katarPlace + "*(1-" + katarEngPlace +"/100)*(1+" + fuvarPlace + "/100)*(1+" + vamPlace +
                         "/100)*(1-" + engedmenyPlace + "/100)*(1+" + egyebPlace +"/100)*(1+" + hulladekPlace + 
                         "/100)*(1+" + szelessegPlace + "/100)+" + fixktgPlace + ")/" + eurRate2 + ",4)");
@@ -392,7 +392,7 @@ public class SourceWorkbook {
             cellArresOkovi.setCellStyle(style2);
         }
 
-        sheet1.createFreezePane(1, firstRowNum + 1);
+        sheet1.createFreezePane(2, firstRowNum + 1);
         Row row = sheet1.getRow(firstRowNum);
         if(row != null) {
             int lastCellNum = row.getLastCellNum();
