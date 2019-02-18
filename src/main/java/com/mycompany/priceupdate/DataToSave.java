@@ -7,11 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public final class LastDirectory {
+public final class DataToSave {
     
     public static String saveThePath(String pathname) {
         String message = "";
-        try (DataOutputStream output = new DataOutputStream(new FileOutputStream("path.dat"))) {
+        try (DataOutputStream output = new DataOutputStream(new FileOutputStream("path.txt"))) {
             output.writeUTF(pathname);
             message = "Path saved";
         } catch (FileNotFoundException ex) {
@@ -23,7 +23,7 @@ public final class LastDirectory {
     }
     
     public static String loadThePath() {
-        try (DataInputStream input = new DataInputStream(new FileInputStream("path.dat"))) {
+        try (DataInputStream input = new DataInputStream(new FileInputStream("path.txt"))) {
             return input.readUTF();
         } catch (FileNotFoundException ex) {
             return "c:\\";

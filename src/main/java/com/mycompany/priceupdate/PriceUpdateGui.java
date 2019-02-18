@@ -2,6 +2,9 @@ package com.mycompany.priceupdate;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,7 +18,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public class PriceUpdateGui extends Application {
     private Label lbStatus = new Label();
@@ -25,10 +27,10 @@ public class PriceUpdateGui extends Application {
     private String destinationFilename = "árfelvitel_táblázat.xlsx";
     private Controller controller;
     private TextField[] tfRates = new TextField[6];
-    
+
     @Override
     public void start(Stage primaryStage) {
-        VBox vBox = new VBox(5);
+    	VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(10));
         vBox.setAlignment(Pos.CENTER);
         
@@ -57,7 +59,7 @@ public class PriceUpdateGui extends Application {
                     tfRates[i].setText("328");
                     break;
                 case 1:
-                    tfRates[i].setText("300");
+                	tfRates[i].setText("300");
                     break;
                 case 2:
                     tfRates[i].setText("285");
@@ -87,12 +89,12 @@ public class PriceUpdateGui extends Application {
         btOpenFile.setOnAction(e -> {
             lbStatus.setText("");
             chooser.setTitle("Open");
-            initialDirectory = LastDirectory.loadThePath();
+            initialDirectory = DataToSave.loadThePath();
             chooser.setInitialDirectory(new File(initialDirectory));
             file = chooser.showOpenDialog(primaryStage);
             if(file != null) {
                 initialDirectory = file.getParent() + "\\";
-                LastDirectory.saveThePath(initialDirectory);
+                DataToSave.saveThePath(initialDirectory);
                 try {
                     controller = new Controller(initialDirectory + file.getName(),
                             initialDirectory + destinationFilename);
@@ -158,6 +160,6 @@ public class PriceUpdateGui extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+    	launch(args);
     }
 }
